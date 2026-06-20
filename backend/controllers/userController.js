@@ -24,7 +24,13 @@ exports.register = async (req, res) => {
         confirmPassword = confirmPassword?.trim();
 
         // Ensure referrer_id is an integer or null to prevent DB type mismatch
-        const referrer_id = (raw_referrer_id && !isNaN(raw_referrer_id)) ? parseInt(raw_referrer_id) : null;
+        let referrer_id = (raw_referrer_id && !isNaN(raw_referrer_id)) ? parseInt(raw_referrer_id) : null;
+        if (referrer_id) {
+            const referrerExists = await pool.query('SELECT id FROM users WHERE id = $1', [referrer_id]);
+            if (referrerExists.rows.length === 0) {
+                referrer_id = null;
+            }
+        }
 
         // 0. Null check for required telemetry
         if (!username || !email || !phone_number || !password) {

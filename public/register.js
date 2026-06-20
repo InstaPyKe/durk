@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Regex Definition Maps
     // Strict Gmail validation (6-30 chars, lowercase, numbers, dots)
-    const gmailRegex = /^[a-z0-9](\.?[a-z0-9]){5,29}@gmail\.com$/;
+    const gmailRegex = /^[a-z0-9](\.?[a-z0-9]){5,29}@gmail\.com$/i;
     // Safaricom specific regex for Kenyan nodes
     const safaricomRegex = /^(?:254|\+254|0)?(7(?:[0129]\d|4[0-3568]|5[7-9]|6[89])|11[0-5])\d{6}$/;
 

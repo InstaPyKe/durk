@@ -243,17 +243,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Unified Glassy Notification Engine ---
     function showGlassNotification(message, type = 'success') {
-        const container = document.getElementById('glassNotifyContainer');
+        const container = document.getElementById('formAlertContainer');
         if (!container) return;
 
-        const node = document.createElement('div');
-        node.className = `glass-notification-node ${type}`;
-        
+        const iconEl = container.querySelector('.form-alert-icon');
+        const titleEl = container.querySelector('.form-alert-title');
+        const msgEl = container.querySelector('.form-alert-message');
+
         const icons = {
-            success: 'bi-shield-check',
-            error: 'bi-exclamation-octagon',
-            info: 'bi-info-circle',
-            warning: 'bi-exclamation-triangle'
+            success: '<i class="bi bi-shield-check"></i>',
+            error: '<i class="bi bi-exclamation-octagon"></i>',
+            info: '<i class="bi bi-info-circle"></i>',
+            warning: '<i class="bi bi-exclamation-triangle"></i>'
         };
 
         const titles = {
@@ -263,22 +264,19 @@ document.addEventListener('DOMContentLoaded', () => {
             warning: 'Security Alert'
         };
 
-        node.innerHTML = `
-            <div class="glass-notification-icon">
-                <i class="bi ${icons[type] || icons.info}"></i>
-            </div>
-            <div class="glass-notification-content">
-                <span class="label">${titles[type] || 'Notification'}</span>
-                <p class="message">${message}</p>
-            </div>
-        `;
+        container.className = 'form-alert-container ' + type;
+        iconEl.innerHTML = icons[type] || icons.info;
+        titleEl.innerText = titles[type] || 'Notification';
+        msgEl.innerText = message;
 
-        container.appendChild(node);
-        setTimeout(() => {
-            node.style.opacity = '0';
-            node.style.transform = 'translateX(20px)';
-            setTimeout(() => node.remove(), 400);
-        }, 4000);
+        // Auto-hide success or info notifications, but keep error notifications visible so user can resolve issues
+        if (type !== 'error') {
+            setTimeout(() => {
+                if (container.classList.contains(type) && msgEl.innerText === message) {
+                    container.classList.add('hidden');
+                }
+            }, 6000);
+        }
     }
 
     // --- Submission Guard / Enable Control Evaluation Rule ---

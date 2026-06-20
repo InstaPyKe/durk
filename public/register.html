@@ -453,6 +453,84 @@
             box-shadow: none;
         }
 
+        /* Small Form-Embedded Alert System */
+        .form-alert-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: left;
+        }
+
+        .form-alert-container.hidden {
+            display: none !important;
+        }
+
+        .form-alert-container.success {
+            background: rgba(0, 234, 135, 0.08);
+            border: 1px solid rgba(0, 234, 135, 0.25);
+            color: var(--primary-green);
+        }
+
+        .form-alert-container.error {
+            background: rgba(255, 51, 51, 0.08);
+            border: 1px solid rgba(255, 51, 51, 0.25);
+            color: var(--danger-red);
+        }
+
+        .form-alert-container.info {
+            background: rgba(0, 112, 243, 0.08);
+            border: 1px solid rgba(0, 112, 243, 0.25);
+            color: var(--primary-blue);
+        }
+
+        .form-alert-container.warning {
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            color: var(--primary-yellow);
+        }
+
+        .form-alert-icon {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .form-alert-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            text-align: left;
+        }
+
+        .form-alert-title {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.8;
+        }
+
+        .form-alert-message {
+            font-size: 0.75rem;
+            line-height: 1.2;
+            font-weight: 500;
+            color: #e6edf3;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .auth-footer-redirect {
             text-align: center;
             margin-top: 25px;
@@ -611,6 +689,15 @@
 
                 <!-- Submission Execution Action Button Trigger -->
                 <button type="submit" class="btn-submit" id="submitBtn" disabled>Create &amp; Proceed</button>
+
+                <!-- Embedded Glass Notification Container (Optimized for small screens) -->
+                <div id="formAlertContainer" class="form-alert-container hidden">
+                    <div class="form-alert-icon"></div>
+                    <div class="form-alert-content">
+                        <span class="form-alert-title"></span>
+                        <p class="form-alert-message"></p>
+                    </div>
+                </div>
 
             </form>
 

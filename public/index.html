@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>durkwalmart Platform - Maximize Your Reach & Earnings</title>
+    <style>
+        /* Base Setup & Colors */
+        :root {
+            --primary-blue: #0070f3;
+            --primary-green: #00ea87;
+            --primary-yellow: #ffd700;
+            --primary-purple: #a855f7;
+            --text-light: #e6edf3; /* Adjusted to match dashboard's default text color */
+            --text-dark: #0a0a0a;
+            --font-sharp: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --glass-bg: rgba(22, 27, 34, 0.7); /* Matched dashboard glass-panel background */
+            --glass-border: rgba(255, 255, 255, 0.08); /* Matched dashboard glass-panel border */
+            --glass-blur: blur(12px); /* Matched dashboard glass-panel blur */
+            --neon-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 234, 135, 0.05);
+            /* Adjustable Scroll Speeds */
+            --logo-speed-tablet: 18s;
+            --logo-speed-mobile: 12s;
+            --logo-speed-desktop: 25s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-sharp);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Glass Panel Definition */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: translateZ(0);
+            will-change: backdrop-filter;
+        }
+
+        @media (max-width: 768px) {
+            .glass-panel {
+                backdrop-filter: blur(6px) !important;
+                background: rgba(13, 17, 23, 0.9) !important;
+            }
+        }
+
+        /* Dropdown Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6%;
+            z-index: 1000;
+        }
+        .navbar.glass-panel {
+            background: rgba(3, 5, 10, 0.85);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: none;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .logo span { color: var(--primary-green); }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .nav-item { position: relative; }
+
+        .nav-item > a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 25px 0;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .nav-item > a:hover { color: var(--primary-green); }
+
+        /* Dropdown Menus */
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(8, 10, 18, 0.98);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            width: 240px;
+            padding: 12px 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .nav-item:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 12px 24px;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .dropdown a:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--primary-yellow);
+        }
+
+        /* Custom Highlight Classes */
+        .highlight-blue { color: var(--primary-blue); }
+        .highlight-green { color: var(--primary-green); }
+        .highlight-yellow { color: var(--primary-yellow); }
+
+        /* Core Layout Grid Elements */
+        .main-container {
+            max-width: 1240px;
+            margin: 120px auto 60px auto;
+            padding: 0 20px;
+        }
+
+        /* --- Moving Gradient Animation --- */
+        @keyframes movingGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Welcome Section Grid */
+        .hero-section {
+            background: linear-gradient(-45deg, rgba(0, 112, 243, 0.15), rgba(0, 234, 135, 0.15), rgba(168, 85, 247, 0.15)) !important;
+            background-size: 400% 400% !important;
+            animation: movingGradient 15s ease infinite !important;
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 60px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 40px;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .hero-left h1 {
+            font-size: 3.4rem;
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+        }
+
+        .motto-banner {
+            display: inline-block;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(0, 112, 243, 0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 112, 243, 0.3);
+            font-weight: 700;
+        }
+
+        .hero-left p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 30px;
+        }
+
+        .action-block {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn-blue {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 112, 243, 0.3);
+        }
+        .btn-blue:hover { background: #0060d3; transform: translateY(-2px); }
+
+        .btn-green {
+            background: var(--primary-green);
+            color: var(--text-dark);
+            box-shadow: 0 0 20px rgba(0, 234, 135, 0.2);
+        }
+        .btn-green:hover { background: #00c672; transform: translateY(-2px); }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--glass-border);
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+
+        /* Integrated Ecosystem Vector Cycle Diagram */
+        .diagram-container {
+            background: rgba(5, 8, 16, 0.6);
+            padding: 30px;
+            position: relative;
+        }
+
+        .diagram-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .cycle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            position: relative;
+        }
+
+        .node {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .node h3 { font-size: 1rem; margin-bottom: 8px; color: var(--primary-green); }
+        .node p { font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.4; }
+
+        .flow-line {
+            position: absolute;
+            top: 45%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-green));
+            z-index: 1;
+        }
+        .line-1 { left: 26%; width: 15%; }
+        .line-2 { left: 59%; width: 15%; }
+
+        /* Live Metrics Dashboard Counter Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border-top: 4px solid transparent;
+            transition: all 0.3s ease-in-out;
+        }
+        .metric-card.glass-panel:hover {
+            transform: translateY(-5px);
+            border-top-color: var(--primary-green);
+        }
+
+        .metric-number {
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 6px;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Section Global Settings */
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* About & Vision Panel */
+        .vision-panel {
+            border-radius: 24px;
+            padding: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 40px;
+        }
+
+        .vision-box h2 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vision-box h2 svg {
+            flex-shrink: 0;
+        }
+
+        .vision-box p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* How it Works Module */
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .step-card {
+            border-radius: 20px;
+            padding: 40px 30px;
+            position: relative;
+            border-top: 4px solid transparent;
+            transition: all 0.3s ease-in-out;
+        }
+        .step-card.glass-panel:hover {
+            transform: translateY(-5px);
+            border-top-color: var(--primary-green);
+        }
+
+        .step-num {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.04);
+            line-height: 1;
+        }
+
+        .step-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .step-card p {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.6;
+        }
+
+        /* Testimonials Component Slider */
+        .testimonial-slider-wrap {
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .testimonial-slide {
+            min-width: 100%;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .quote-text {
+            font-size: 1.4rem;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .user-meta {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .user-status {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background: var(--primary-blue);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Trusted By Section / Social Proof */
+        .trusted-by {
+            border-radius: 20px;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            text-align: center;
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .trusted-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 35px;
+        }
+
+        .brand-logos {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 80px;
+            width: max-content;
+            animation: marquee var(--logo-speed-desktop) linear infinite;
+        }
+
+        .brand-logos:hover { animation-play-state: paused; }
+
+        .brand-item {
+            display: flex;
+            align-items: center;
+            opacity: 0.35;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.4rem; 
+            font-weight: 700;
+            cursor: default;
+            color: rgba(255, 255, 255, 0.9);
+            flex-shrink: 0;
+            letter-spacing: -0.2px;
+        }
+
+        .brand-item svg {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .brand-item:hover {
+            opacity: 1;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Continuous Marquee Animation */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Payout Channels Banner */
+        .payout-channels {
+            border-radius: 16px;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .channel-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .channel-methods {
+            display: flex;
+            gap: 40px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        /* --- Intersection Observer Reveal Styles --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            will-change: opacity, transform;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Back to Top Button --- */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: var(--primary-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .back-to-top:hover { color: var(--primary-green); background: rgba(255,255,255,0.08); border-color: var(--primary-green); }
+
+        /* --- Progress Ring Styles --- */
+        .progress-ring {
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            transform: rotate(-90deg);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .progress-ring__circle {
+            stroke-dasharray: 148;
+            stroke-dashoffset: 148;
+            transition: stroke-dashoffset 0.1s linear;
+            stroke-linecap: round;
+        }
+
+        .channel-methods span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Comprehensive Footer Configs */
+        .footer {
+            background: rgba(2, 3, 7, 0.96);
+            padding: 60px 4% 30px 4%;
+            font-size: 0.85rem;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 12px;
+            line-height: 1.6;
+        }
+
+        .footer-column h4 {
+            font-size: 0.95rem;
+            color: #fff;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .footer-column ul { list-style: none; }
+        .footer-column ul li { margin-bottom: 12px; }
+
+        .footer-column ul li a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-column ul li a:hover { color: var(--primary-green); }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Mobile Hamburger Menu icon Structure */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 1100;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text-light);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Hamburger Active Animations */
+        .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        /* Responsive Layout Overrides */
+        @media (max-width: 950px) {
+            .hero-section, .vision-panel { grid-template-columns: 1fr; padding: 40px; }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-container { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .cycle-grid { grid-template-columns: 1fr; gap: 20px; }
+            .flow-line { display: none; }
+            .brand-logos { animation-duration: var(--logo-speed-tablet); }
+        }
+
+        @media (max-width: 560px) {
+            .hamburger { display: flex; }
+            
+            .nav-links {
+                position: fixed;
+                top: 75px;
+                right: -100%;
+                width: 100%;
+                height: calc(100vh - 75px);
+                background: rgba(4, 6, 12, 0.99);
+                backdrop-filter: var(--glass-blur);
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 40px 8%;
+                gap: 0;
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow-y: auto;
+                border-top: 1px solid var(--glass-border);
+            }
+
+            .nav-links.active { right: 0; }
+
+            .nav-item { width: 100%; border-bottom: 1px solid var(--glass-border); }
+
+            .nav-item > a {
+                padding: 20px 0;
+                width: 100%;
+                font-size: 1.1rem;
+                justify-content: space-between;
+            }
+
+            .dropdown {
+                position: static;
+                transform: none;
+                width: 100%;
+                opacity: 1;
+                visibility: visible;
+                display: block;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                background: transparent;
+                box-shadow: none;
+                padding: 0 0 0 15px;
+                border: none;
+            }
+
+            .nav-item.mobile-active .dropdown {
+                max-height: 300px;
+                padding-top: 5px;
+                padding-bottom: 15px;
+            }
+
+            .brand-logos { animation-duration: var(--logo-speed-mobile); }
+            .hero-left h1 { font-size: 2.4rem; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .testimonial-slider-wrap { padding: 30px 15px; }
+            .quote-text { font-size: 1.1rem; }
+        }
+
+        /* --- Global System Notification Engine --- */
+        #systemNotification {
+            position: fixed;
+            bottom: 40px;
+            left: 30px;
+            z-index: 9999;
+            padding: 18px 22px;
+            border-radius: 16px;
+            background: rgba(0, 234, 135, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 234, 135, 0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            max-width: 400px;
+            animation: slideInNotify 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: opacity 0.5s ease;
+        }
+        @keyframes slideInNotify {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .notif-icon-box { flex-shrink: 0; width: 24px; height: 24px; }
+        .notif-text-box { display: flex; flex-direction: column; }
+        .notif-title { 
+            font-size: 0.8rem; 
+            font-weight: 800; 
+            color: var(--primary-green); 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+        .notif-message { 
+            font-size: 0.7rem; 
+            font-style: italic; 
+            color: rgba(255, 255, 255, 0.85); 
+            line-height: 1.5; 
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <svg class="progress-ring" width="50" height="50">
+            <circle class="progress-ring__circle" stroke="var(--primary-green)" stroke-width="3" fill="transparent" r="23.5" cx="25" cy="25"/>
+        </svg>
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="position: relative; z-index: 2;"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+
+    <!-- Navigation Bar Portal Component -->
+    <header class="navbar glass-panel">
+        <a href="index.html" class="logo">Durk<span>walmart</span></a>
+        
+        <nav>
+            <ul class="nav-links" id="navLinks">
+                <li class="nav-item"><a href="#welcome">Home</a></li>
+                <li class="nav-item">
+                    <a href="#" class="dropdown-trigger">Earn Money ▾</a>
+                    <div class="dropdown">
+                        <a href="#how-it-works">How it Works</a>
+                        <a href="../user/dashboard.html">View Tasks</a>
+                        <a href="../user/playgames.html">Play Games</a>
+                        <a href="userplan.html">Subscription Plans</a>
+                    </div> <!-- Removed glass-panel here as it's applied to the parent dropdown -->
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="dropdown-trigger">Advertise ▾</a>
+                    <div class="dropdown">
+                        <a href="advertise.html">Create Campaign</a>
+                        <a href="userplan.html">Ad Packages</a>
+                    </div> <!-- Removed glass-panel here as it's applied to the parent dropdown -->
+                </li>
+                <li class="nav-item"><a href="#about">About Us</a></li>
+                <!-- Dynamic Navigation Anchor Placement Target -->
+                <li class="nav-item" id="authNavContainer">
+                    <a href="login.html" class="highlight-green">Login / Register</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="hamburger" id="hamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <!-- Main Content Container Interface Grid wrapper -->
+    <main class="main-container">
+
+        <!-- Welcome Hero Section Grid Box -->
+        <section class="hero-section reveal glass-panel" id="welcome">
+            <div class="hero-left">
+                <div class="motto-banner">Global Traffic &amp; Task Engine</div>
+                <h1>Empowering Brands. <br>Rewarding <span class="highlight-blue">Your Time</span>.</h1>
+                <p>durkwalmart bridges the gap between premium global enterprises needing authentic digital engagement and micro-task workers looking to maximize remote earnings with stable global web systems.</p>
+                <div class="action-block">
+                    <a href="register.html" class="btn btn-green" id="heroCTA">Register</a>
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                </div>
+            </div>
+            
+            <div class="diagram-container glass-panel">
+                <div class="diagram-title">Ecosystem Distribution Loop</div>
+                <div class="cycle-grid">
+                    <div class="node">
+                        <h3>Brands</h3>
+                        <p>Fund targeted micro-campaigns.</p>
+                    </div>
+                    <div class="node">
+                        <h3>durkwalmart</h3>
+                        <p>Validates and tracks user actions.</p>
+                    </div>
+                    <div class="node">
+                        <h3>Workers</h3>
+                        <p>Complete tasks and claim earnings.</p>
+                    </div>
+                </div>
+                <div class="flow-line line-1"></div>
+                <div class="flow-line line-2"></div>
+            </div>
+        </section>
+
+        <!-- Live Platform Performance Metrics Dashboard Counters -->
+        <section class="metrics-grid reveal glass-panel">
+            <div class="metric-card glass-panel">
+                <div class="metric-number highlight-blue" id="count-members">152,400+</div>
+                <div class="metric-label">Active Members</div>
+            </div>
+            <div class="metric-card glass-panel">
+                <div class="metric-number highlight-green" id="count-payouts">$2.4M+</div>
+                <div class="metric-label">Total Paid Out</div>
+            </div>
+            <div class="metric-card glass-panel">
+                <div class="metric-number highlight-yellow" id="count-tasks">4.8M+</div>
+                <div class="metric-label">Tasks Completed</div>
+            </div>
+            <div class="metric-card glass-panel">
+                <div class="metric-number" style="color: #a370f7;">99.9%</div>
+                <div class="metric-label">Uptime Execution</div>
+            </div>
+        </section>
+
+        <!-- About Core Strategic Mission Vision Panel -->
+        <section class="vision-panel reveal glass-panel" id="about">
+            <div class="vision-box">
+                <h2>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    Our Mission
+                </h2>
+                <p>To democratize digital promotion pipelines. We believe that consumers should be active, paid stakeholders in the advertising loops managed by major modern corporations, providing transparent engagement audits across distributed global digital task landscapes.</p>
+            </div>
+            <div class="vision-box">
+                <h2>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3"/><path d="M12 15v5s3.03-.55 5-2c2.2-1.62 3-5 3-5"/></svg>
+                    Strategic Vision
+                </h2>
+                <p>Architecting a seamless, decentralized workspace framework where anyone across the globe can easily open an active account, discover high-paying verified traffic tasks, complete them securely, and receive guaranteed micro-payout structures instantly.</p>
+            </div>
+        </section>
+
+        <!-- 3-Step Visual Procedure Workflow Layout Matrix -->
+        <section class="section-header reveal" id="how-it-works">
+            <h2>Three Steps to Your Payout</h2>
+            <p>A structured workflow engineering streamlined task fulfillment metrics</p>
+        </section>
+
+        <section class="steps-container reveal glass-panel">
+            <div class="step-card glass-panel">
+                <div class="step-num">01</div>
+                <h3>Choose Plan</h3>
+                <p>Select from our tiered membership options designed to open high-yield premium marketing queues tailored to your execution scale preferences.</p>
+            </div>
+            <div class="step-card glass-panel">
+                <div class="step-num">02</div>
+                <h3>Complete Tasks</h3>
+                <p>Interact with social media trends, explore targeted applications, or provide engagement metrics requested directly by global digital brands.</p>
+            </div>
+            <div class="step-card glass-panel">
+                <div class="step-num">03</div>
+                <h3>Withdraw Earnings</h3>
+                <p>Process your balances instantly into secure crypto wallets or verified fiat payment networks using our seamless automated engine infrastructure.</p>
+            </div>
+        </section>
+
+        <!-- Dynamic User Testimonials Review Slider Component -->
+        <section class="section-header reveal">
+            <h2>Success Stories From Our Networks</h2>
+            <p>Read experiences from micro-task agents securing successful system distributions</p>
+        </section>
+
+        <section class="testimonial-slider-wrap reveal glass-panel" id="testimonials">
+            <div class="testimonial-track" id="testimonialTrack">
+                <div class="testimonial-slide">
+                    <p class="quote-text">"durkwalmart completely changed my perspective on online monetization. The tier structures are transparent, and I successfully requested my first cashout to my USDT wallet within 48 hours of starting tasks."</p>
+                    <div class="user-meta">Alphonse M.</div>
+                    <div class="user-status">Verified Member - Tier 3 Account</div>
+                </div>
+                <div class="testimonial-slide">
+                    <p class="quote-text">"As a digital marketer, running automated exposure campaigns through this engine gave us unprecedented engagement velocity. Traffic validation rules filters out poor leads perfectly."</p>
+                    <div class="user-meta">Sarah K.</div>
+                    <div class="user-status">Enterprise Ad Client</div>
+                </div>
+                <div class="testimonial-slide">
+                    <p class="quote-text">"The interface execution speeds are incredible. The corporate dashboard makes tracking daily referral rewards simple. Highly recommend registering if you have extra hours to work."</p>
+                    <div class="user-meta">Bravin W.</div>
+                    <div class="user-status">VIP Agent - Tier 5 Account</div>
+                </div>
+            </div>
+            <div class="slider-dots" id="sliderDots"></div>
+        </section>
+
+        <!-- Social Proof Continuous Marquee Icon Banner Loop Element -->
+        <section class="trusted-by reveal glass-panel">
+            <div class="trusted-title">As Seen On &amp; Trusted By Corporate Ecosystems</div>
+            <div class="brand-logos" id="brandMarquee">
+                <!-- Set 1 -->
+                <div class="brand-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.262 6.47v8.97L12 19.91l7.738-4.47v-8.97L12 2zm5.152 12.15L12 17.14l-5.152-2.99V8.16L12 5.17l5.152 2.99v5.99z"/></svg>
+                    <span>Google Cloud</span>
+                </div>
+                <div class="brand-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.92 14.5c-.32 1.44-1.93 2.5-4.5 2.5s-4.18-1.06-4.5-2.5h-1c.32 2 2.37 3.5 5.5 3.5s5.18-1.5 5.5-3.5h-1zm.18-4c-.38-.2-.84-.2-1.22 0-.38.2-.64.57-.74 1h-.25c-.1-.43-.36-.8-.74-1a1.44 1.44 0 0 0-1.22 0c-.38.2-.64.57-.74 1H8.34c-.1-.43-.36-.8-.74-1a1.44 1.44 0 0 0-1.22 0 1.25 1.25 0 0 0-.61 1.08c0 .6.4 1.09 1 1.22l.14.03c.5.07 1-.22 1.14-.72h.43c.1.43.36.8.74 1 .38.2.84.2 1.22 0 .38-.2.64-.57.74-1h.25c.1.43.36.8.74 1 .38.2.84.2 1.22 0 .38-.2.64-.57.74-1h.43c.14.5.64.79 1.14.72l.14-.03c.6-.13 1-.62 1-1.22a1.25 1.25 0 0 0-.61-1.08z"/></svg>
+                    <span>Amazon AWS</span>
+                </div>
+                <div class="brand-item">
+                    <span>Walmart Global</span>
+                </div>
+                <div class="brand-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 9.172l-9.165-.766L12 0 9.165 8.406 0 9.172l7.043 6.071L5.051 24 12 19.333 18.949 24l-1.992-8.757L24 9.172z"/></svg>
+                    <span>Trustpilot</span>
+                </div>
+                <!-- Set 2 (Cloned for Continuous Marquee Wrap Execution) -->
+                <div class="brand-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.262 6.47v8.97L12 19.91l7.738-4.47v-8.97L12 2zm5.152 12.15L12 17.14l-5.152-2.99V8.16L12 5.17l5.152 2.99v5.99z"/></svg>
+                    <span>Google Cloud</span>
+                </div>
+                <div class="brand-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.92 14.5c-.32 1.44-1.93 2.5-4.5 2.5s-4.18-1.06-4.5-2.5h-1c.32 2 2.37 3.5 5.5 3.5s5.18-1.5 5.5-3.5h-1zm.18-4c-.38-.2-.84-.2-1.22 0-.38.2-.64.57-.74 1h-.25c-.1-.43-.36-.8-.74-1a1.44 1.44 0 0 0-1.22 0c-.38.2-.64.57-.74 1H8.34c-.1-.43-.36-.8-.74-1a1.44 1.44 0 0 0-1.22 0 1.25 1.25 0 0 0-.61 1.08c0 .6.4 1.09 1 1.22l.14.03c.5.07 1-.22 1.14-.72h.43c.1.43.36.8.74 1 .38.2.84.2 1.22 0 .38-.2.64-.57.74-1h.25c.1.43.36.8.74 1 .38.2.84.2 1.22 0 .38-.2.64-.57.74-1h.43c.14.5.64.79 1.14.72l.14-.03c.6-.13 1-.62 1-1.22a1.25 1.25 0 0 0-.61-1.08z"/></svg>
+                    <span>Amazon AWS</span>
+                </div>
+                <div class="brand-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9.5a2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5 2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5zm0-2.5a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0-4a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1zm7.071 2.929a1 1 0 0 1 0 1.414l-1.414 1.414a1 1 0 0 1-1.414-1.414l1.414-1.414a1 1 0 0 1 1.414 0zm2.929 7.071a1 1 0 0 1-1 1h-2a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1zm-2.929 7.071a1 1 0 0 1-1.414 0l-1.414-1.414a1 1 0 1 1 1.414-1.414l1.414 1.414a1 1 0 0 1 0 1.414zm-7.071 2.929a1 1 0 0 1-1-1v-2a1 1 0 0 1 2 0v2a1 1 0 0 1-1 1zm-7.071-2.929a1 1 0 0 1 0-1.414l1.414-1.414a1 1 0 1 1 1.414 1.414L5.343 20.071a1 1 0 0 1-1.414 0zm-2.929-7.071a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2h-2a1 1 0 0 1-1-1zm2.929-7.071a1 1 0 0 1 1.414 0l1.414 1.414a1 1 0 1 1-1.414 1.414L3.929 6.343a1 1 0 0 1 0-1.414z"/></svg>
+                    <span>Walmart Global</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payout Integration Channel Footer Banner -->
+        <section class="payout-channels reveal glass-panel">
+            <div class="channel-title">Supported Settlement Rails</div>
+            <div class="channel-methods">
+                <span class="highlight-green">USDT TRC20</span>
+                <span class="highlight-blue">M-Pesa STK</span>
+                <span class="highlight-yellow">PayPal Instant</span>
+                <span>Stripe Payout</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Comprehensive Base Structural Footer Portal Layout -->
+    <footer class="footer glass-panel">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">durk<span>walmart</span></a>
+                <p>Empowering dynamic digital workforce micro-task scaling across decentralized global financial architectures. Secure tracking. Accelerated traffic verification systems.</p>
+            </div>
+            <div class="footer-column">
+                <h4>System Portal</h4>
+                <ul>
+                    <li><a href="../user/dashboard.html">Worker Dashboard</a></li>
+                    <li><a href="advertise.html">Campaign Panel</a></li>
+                    <li><a href="userplan.html">Subscription Levels</a></li>
+                    <li><a href="login.html">Agent Auth</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Resource Audits</h4>
+                <ul>
+                    <li><a href="#how-it-works">Execution Workflow</a></li>
+                    <li><a href="#about">Corporate Profile</a></li>
+                    <li><a href="#testimonials">Member Reviews</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Legal &amp; Policy</h4>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Framework</a></li>
+                    <li><a href="#">AML / Anti-Fraud Regulation</a></li>
+                    <li><a href="#">Contact Support</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 durkwalmart Platform Inc. All rights framework reserved.</div>
+            <div>Designed for Corporate Enterprise Optimization.</div>
+        </div>
+    </footer>
+
+    <!-- Global Glassy Notification Portal -->
+    <div id="systemNotification">
+        <div class="notif-icon-box" id="notifIcon"></div>
+        <div class="notif-text-box">
+            <div class="notif-title" id="notifTitle">SYSTEM NOTIFICATION</div>
+            <div class="notif-message" id="notifMessage">Syncing telemetry data...</div>
+        </div>
+    </div>
+
+    <script>
+        // Global System Messaging Interface
+        window.showSystemMessage = function(message, type = 'success') {
+            const notification = document.getElementById('systemNotification');
+            const iconBox = document.getElementById('notifIcon');
+            const titleEl = document.getElementById('notifTitle');
+            const msgEl = document.getElementById('notifMessage');
+
+            const types = {
+                success: {
+                    title: 'System Success',
+                    color: '#00ea87',
+                    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#00ea87" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+                },
+                error: {
+                    title: 'Access Denied',
+                    color: '#ff4d4d',
+                    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#ff4d4d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+                },
+                info: {
+                    title: 'System Node',
+                    color: '#0070f3',
+                    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#0070f3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+                }
+            };
+
+            const config = types[type] || types.success;
+            
+            if (iconBox) iconBox.innerHTML = config.svg;
+            if (titleEl) {
+                titleEl.innerText = config.title;
+                titleEl.style.color = config.color;
+            }
+            if (msgEl) msgEl.innerText = message;
+
+            notification.style.display = 'flex';
+            notification.style.opacity = '1';
+
+            // Auto-retract logic
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => { notification.style.display = 'none'; }, 500);
+            }, 4500);
+        };
+
+        // Catch-all Exception Listeners for Localhost Debugging & Production Stability
+        window.onerror = function(message, source, lineno, colno, error) {
+            window.showSystemMessage(`Terminal Exception: ${message}`, 'error');
+            return false;
+        };
+
+        window.addEventListener('unhandledrejection', function(event) {
+            window.showSystemMessage(`Async Portal Error: ${event.reason}`, 'error');
+        });
+
+        // Example: Initialized indicator
+        console.log("Global System Messenger Initialized.");
+    </script>
+
+    <script src="index.js"></script>
+</body>
+</html>

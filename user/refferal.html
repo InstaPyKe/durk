@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Matrix | durkwalmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: #e6edf3;
+        }
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .sidebar-transition {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .back-to-top-visible { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; }
+        .hamburger-icon span { display: block; width: 24px; height: 2px; background: currentColor; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger-icon.hamburger-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger-icon.hamburger-active span:nth-child(2) { opacity: 0; }
+        .hamburger-icon.hamburger-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+
+        @keyframes glassSlideIn {
+            from { transform: translateX(100%) scale(0.9); opacity: 0; }
+            to { transform: translateX(0) scale(1); opacity: 1; }
+        }
+        .glass-notification-node {
+            animation: glassSlideIn 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            background: rgba(16, 185, 129, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 glass-panel sidebar-transition -translate-x-full lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-800">
+        <div class="flex flex-col h-full">
+            <div class="p-6 flex items-center justify-between">
+                <a href="../public/index.html" class="text-2xl font-black tracking-tighter text-white">
+                    Durk<span class="text-emerald-500">walmart</span>
+                </a>
+                <button id="sidebarClose" class="lg:hidden p-2 text-gray-400 hover:text-white transition">
+                    <i class="bi bi-x-lg text-xl"></i>
+                </button>
+            </div>
+            <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-grid-fill"></i> Dashboard
+                </a>
+                <a href="yu-tube.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-youtube"></i> YouTube Tasks
+                </a>
+                <a href="tiktok.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-tiktok"></i> TikTok Tasks
+                </a>
+                <a href="playgames.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-controller"></i> Play Games
+                </a>
+                <a href="survey.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-clipboard-data"></i> Surveys
+                </a>
+                <a href="blog.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-pencil-square"></i> Blog Writing
+                </a>
+                <a href="spin.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-patch-check"></i> Spin & Win
+                </a>
+                <a href="wallet.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-wallet2"></i> Withdraw Funds
+                </a>
+                <a href="refferal.html" class="flex items-center gap-3 px-4 py-3 bg-emerald-500/10 text-emerald-400 rounded-xl font-medium border border-emerald-500/20">
+                    <i class="bi bi-people-fill"></i> Referral Network
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-800">
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-gear-fill"></i> Security Settings
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col min-w-0">
+        <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-4 lg:px-8 shrink-0 z-40">
+            <div class="flex items-center gap-4">
+                <button id="sidebarToggle" class="lg:hidden p-2 text-gray-400 hover:text-white transition hamburger-icon">
+                    <span></span><span></span><span></span>
+                </button>
+                <h1 class="text-sm font-bold uppercase tracking-widest text-emerald-500">Referral Matrix</h1>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <div id="usernameDisplay" class="text-xs font-bold text-white">...</div>
+                    <div id="upstreamReferrer" class="text-[9px] text-gray-500 font-bold uppercase tracking-tight">Linked to Hub</div>
+                </div>
+                <img id="profileImage" src="" alt="Profile" class="h-9 w-9 rounded-xl bg-gray-800 border border-gray-700">
+                <button id="logoutBtn" class="p-2 text-gray-400 hover:text-rose-400 transition">
+                    <i class="bi bi-box-arrow-right text-lg"></i>
+                </button>
+            </div>
+        </header>
+
+        <main id="mainContent" class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8 relative">
+            <div id="scrollProgress" class="fixed top-0 left-0 lg:left-64 right-0 h-1 bg-emerald-500 origin-left scale-x-0 z-50 transition-transform duration-100"></div>
+            <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+            <div class="max-w-5xl mx-auto space-y-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="glass-panel p-6 rounded-3xl border-l-4 border-emerald-500">
+                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Network Capacity</p>
+                        <div class="flex items-end gap-2">
+                            <span id="referralCount" class="text-3xl font-black text-white font-mono">0</span>
+                            <span class="text-[10px] text-emerald-500 font-bold uppercase mb-1.5">Nodes</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 col-span-1 md:col-span-2">
+                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Cumulative Referral Yield</p>
+                        <div class="flex items-end gap-2">
+                            <span id="totalReferralEarnings" class="text-3xl font-black text-white font-mono text-blue-400">KSh 0.00</span>
+                            <span id="networkTierBadge" class="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-8 rounded-[2.5rem] space-y-6">
+                    <div>
+                        <h3 class="text-lg font-black text-white uppercase tracking-tighter">Your Invigilation ID</h3>
+                        <p class="text-xs text-gray-500">Synchronize this protocol with new agents to unlock multi-layer yields.</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="referralLinkInput" readonly class="flex-1 bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-sm text-emerald-400 font-mono focus:outline-none" value="Synchronizing...">
+                        <button id="copyLinkBtn" class="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-black font-black rounded-2xl text-xs transition uppercase tracking-widest shadow-xl shadow-emerald-500/20">
+                            Copy Protocol
+                        </button>
+                    </div>
+                    <p id="copyFeedback" class="hidden text-center text-[10px] font-black text-emerald-500 uppercase tracking-widest animate-pulse">Link synchronized to clipboard</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="text-center p-6 glass-panel rounded-3xl border border-white/5">
+                        <div class="w-10 h-10 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-500/20"><i class="bi bi-diagram-3"></i></div>
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Layer 1 (<span id="l1Pct">40</span>%)</h4>
+                        <p id="l1Earnings" class="text-xl font-black text-white font-mono">KSh 0.00</p>
+                    </div>
+                    <div class="text-center p-6 glass-panel rounded-3xl border border-white/5">
+                        <div class="w-10 h-10 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-500/20"><i class="bi bi-diagram-2"></i></div>
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Layer 2 (<span id="l2Pct">20</span>%)</h4>
+                        <p id="l2Earnings" class="text-xl font-black text-white font-mono">KSh 0.00</p>
+                    </div>
+                    <div class="text-center p-6 glass-panel rounded-3xl border border-white/5">
+                        <div class="w-10 h-10 bg-purple-500/10 text-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-purple-500/20"><i class="bi bi-diagram-1"></i></div>
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Layer 3 (<span id="l3Pct">10</span>%)</h4>
+                        <p id="l3Earnings" class="text-xl font-black text-white font-mono">KSh 0.00</p>
+                    </div>
+                </div>
+
+                <div class="space-y-12 pb-20">
+                    <div class="space-y-4">
+                        <h2 class="px-2 text-xs font-black uppercase tracking-[0.2em] text-emerald-500 flex items-center justify-between">Direct Nodes (L1) <span class="text-[9px] text-gray-600 bg-white/5 px-2 py-0.5 rounded-full">Primary Network</span></h2>
+                        <div class="glass-panel rounded-3xl overflow-hidden border border-white/5">
+                            <table class="w-full text-left"><thead class="text-[9px] uppercase tracking-widest text-gray-500 font-black bg-white/[0.02]"><tr><th class="px-6 py-4">Agent Identity</th><th class="px-6 py-4">Contact</th><th class="px-6 py-4 text-right">Verification</th></tr></thead><tbody id="l1TableBody" class="text-xs"><tr><td colspan="3" class="px-6 py-12 text-center text-gray-700 italic animate-pulse">Initializing Layer 01...</td></tr></tbody></table>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h2 class="px-2 text-xs font-black uppercase tracking-[0.2em] text-blue-500 flex items-center justify-between">Secondary Nodes (L2) <span class="text-[9px] text-gray-600 bg-white/5 px-2 py-0.5 rounded-full">Expansion Network</span></h2>
+                        <div class="glass-panel rounded-3xl overflow-hidden border border-white/5">
+                            <table class="w-full text-left"><thead class="text-[9px] uppercase tracking-widest text-gray-500 font-black bg-white/[0.02]"><tr><th class="px-6 py-4">Agent Identity</th><th class="px-6 py-4">Contact</th><th class="px-6 py-4 text-right">Verification</th></tr></thead><tbody id="l2TableBody" class="text-xs"><tr><td colspan="3" class="px-6 py-12 text-center text-gray-700 italic">Standby for data sync...</td></tr></tbody></table>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h2 class="px-2 text-xs font-black uppercase tracking-[0.2em] text-purple-500 flex items-center justify-between">Tertiary Nodes (L3) <span class="text-[9px] text-gray-600 bg-white/5 px-2 py-0.5 rounded-full">Tertiary Network</span></h2>
+                        <div class="glass-panel rounded-3xl overflow-hidden border border-white/5">
+                            <table class="w-full text-left"><thead class="text-[9px] uppercase tracking-widest text-gray-500 font-black bg-white/[0.02]"><tr><th class="px-6 py-4">Agent Identity</th><th class="px-6 py-4">Contact</th><th class="px-6 py-4 text-right">Verification</th></tr></thead><tbody id="l3TableBody" class="text-xs"><tr><td colspan="3" class="px-6 py-12 text-center text-gray-700 italic">Standby for data sync...</td></tr></tbody></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <button id="backToTop" class="fixed bottom-8 right-8 p-3 bg-emerald-500 text-black rounded-full shadow-lg opacity-0 invisible transition-all duration-300 translate-y-10 z-50 hover:bg-emerald-400">
+            <i class="bi bi-arrow-up text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Glassy Notification UI Section -->
+    <div id="glassNotifyContainer" class="fixed bottom-8 right-8 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Glassy Decision Modal -->
+    <div id="glassDecisionModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+        <div class="glass-notification-node p-8 rounded-[2.5rem] w-full max-w-sm text-center shadow-2xl border-emerald-500/30">
+            <div id="decisionIcon" class="mx-auto w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-6"></div>
+            <h3 id="decisionTitle" class="text-xs font-black uppercase tracking-[0.2em] text-white mb-2"></h3>
+            <p id="decisionText" class="text-[9px] italic text-emerald-400/80 leading-relaxed uppercase tracking-tighter px-4"></p>
+            <div class="flex gap-3 mt-8">
+                <button id="decisionAbort" class="flex-1 py-3 bg-white/5 hover:bg-white/10 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all border border-white/10">Abort</button>
+                <button id="decisionConfirm" class="flex-1 py-3 bg-emerald-500 text-black text-[9px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-emerald-500/20">Authorize</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="refferal.js"></script>
+</body>
+</html>

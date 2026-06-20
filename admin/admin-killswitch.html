@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Kill Switch | durkADMIN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        body { background: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .danger-glow { box-shadow: 0 0 50px rgba(244, 63, 94, 0.2); }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+    <admin-header active="killswitch"></admin-header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <admin-sidebar active="killswitch"></admin-sidebar>
+
+        <main class="flex-1 flex items-center justify-center p-8 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-rose-950/20 via-transparent to-transparent">
+        <div class="max-w-xl w-full text-center space-y-8">
+            <div class="space-y-2">
+                <h1 class="text-5xl font-black tracking-tighter uppercase">Danger <span class="text-rose-500">Zone</span></h1>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em]">Master System Termination Protocol</p>
+            </div>
+
+            <div class="glass-panel p-10 rounded-[3rem] border-rose-500/20 danger-glow relative overflow-hidden">
+                <div id="statusIndicator" class="mb-8 inline-flex items-center gap-3 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-black text-emerald-500 uppercase tracking-widest">System Online</span>
+                </div>
+
+                <p class="text-gray-400 text-sm leading-relaxed mb-10">
+                    Activating the <span class="text-white font-bold">Kill Switch</span> will immediately suspend all user earning cycles and withdrawal requests. Use only during security breaches or critical maintenance.
+                </p>
+
+                <div class="flex flex-col gap-4">
+                    <button id="killSwitchBtn" class="w-full py-5 bg-rose-600 hover:bg-rose-500 text-white font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-rose-900/40 active:scale-95">
+                        Engage Kill Switch
+                    </button>
+                    <p class="text-[10px] text-gray-600 font-bold uppercase">Authorization Level 4 Required</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass-panel p-4 rounded-2xl text-left border-white/5">
+                    <p class="text-[9px] font-black text-gray-500 uppercase mb-1">Last Protocol Change</p>
+                    <p id="lastChange" class="text-xs font-mono text-gray-300">N/A</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl text-left border-white/5">
+                    <p class="text-[9px] font-black text-gray-500 uppercase mb-1">Node Security</p>
+                    <p class="text-xs font-mono text-emerald-500">ENCRYPTED</p>
+                </div>
+            </div>
+        </div>
+        </main>
+    </div>
+
+    <script src="/admin/admin-nav.js"></script>
+    <script src="/admin/admin-killswitch.js"></script>
+</body>
+</html>
+```
+
+```diff

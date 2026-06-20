@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Payouts | durkwalmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #e6edf3;
+        }
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+    <admin-header active="payouts"></admin-header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <admin-sidebar active="payouts"></admin-sidebar>
+
+        <!-- Main Viewport -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-8 shrink-0 z-40">
+            <div class="flex items-center gap-4">
+                <h1 class="text-sm font-bold uppercase tracking-widest text-emerald-500">PAYOUT MANAGEMENT</h1>
+            </div>
+            <div id="syncStatus" class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Real-time Sync Active</span>
+            </div>
+        </header>
+
+        <main id="mainContent" class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8">
+            
+            <!-- Pending Payouts Section -->
+            <div class="glass-panel rounded-3xl overflow-hidden border border-white/5">
+                <div class="p-6 border-b border-gray-800/50 flex items-center justify-between bg-white/[0.02]">
+                    <div class="space-y-1">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-white">PENDING WITHDRAWALS</h3>
+                        <p class="text-[10px] text-gray-500 uppercase font-medium">Review and process agent payout requests</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-black text-gray-500 uppercase">Total Pending: <span id="pendingCount" class="text-rose-500">0</span></span>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                <th class="px-8 py-5">Request ID</th>
+                                <th class="px-8 py-5">Agent Username</th>
+                                <th class="px-8 py-5">Amount (KSh)</th>
+                                <th class="px-8 py-5">Phone Number</th>
+                                <th class="px-8 py-5">Wallet Type</th>
+                                <th class="px-8 py-5">Requested On</th>
+                                <th class="px-8 py-5 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payoutsTableBody" class="text-xs font-medium">
+                            <tr class="border-t border-gray-800/50">
+                                <td colspan="7" class="px-8 py-20 text-center text-gray-600 italic tracking-widest uppercase text-[10px]">
+                                    Loading pending withdrawal requests...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Processed Payouts Section (Optional, for future expansion) -->
+            <!--
+            <div class="glass-panel rounded-3xl overflow-hidden border border-white/5 mt-8">
+                <div class="p-6 border-b border-gray-800/50 flex items-center justify-between bg-white/[0.02]">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-white">PROCESSED WITHDRAWALS</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                <th class="px-8 py-5">ID</th>
+                                <th class="px-8 py-5">Agent</th>
+                                <th class="px-8 py-5">Amount</th>
+                                <th class="px-8 py-5">Status</th>
+                                <th class="px-8 py-5">Processed On</th>
+                            </tr>
+                        </thead>
+                        <tbody id="processedPayoutsTableBody" class="text-xs font-medium">
+                            <tr><td colspan="5" class="px-8 py-10 text-center text-gray-600 italic">No processed payouts yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            -->
+        </main>
+        </div>
+    </div>
+    <script src="/admin/admin-nav.js"></script>
+    <script src="/admin/admin-payouts.js"></script>
+</body>
+</html>

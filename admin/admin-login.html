@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | DurkWalmat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md glass-panel p-8 rounded-2xl shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-black tracking-tighter text-white mb-2">
+                durk<span class="text-emerald-500">ADMIN</span>
+            </h1>
+            <p class="text-gray-400 text-sm font-medium">Restricted Access: Administrative Terminal</p>
+        </div>
+
+        <form id="adminLoginForm" class="space-y-6">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Admin Email</label>
+                <div class="relative">
+                    <i class="bi bi-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="email" id="email" value="adminbravin@durk.com" required
+                        class="w-full bg-gray-900/50 border border-gray-800 rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Access Key</label>
+                <div class="relative">
+                    <i class="bi bi-shield-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="password" id="accessKey" value="qwerty123#" required
+                        class="w-full bg-gray-900/50 border border-gray-800 rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition outline-none">
+                </div>
+            </div>
+
+            <button type="submit" id="loginBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98]">
+                Establish Connection
+            </button>
+        </form>
+
+        <div id="statusMessage" class="mt-6 text-center text-sm hidden"></div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('adminLoginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const statusMsg = document.getElementById('statusMessage');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('accessKey').value.trim();
+
+            // Reset UI state
+            statusMsg.className = "mt-6 text-center text-sm text-emerald-400 font-medium";
+            statusMsg.innerText = "Authenticating with central node...";
+            statusMsg.classList.remove('hidden');
+            loginBtn.disabled = true;
+            loginBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            try {
+                const response = await fetch('/api/users/admin-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: email, // Sending email as username to match backend findByUsername logic
+                        password: password 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusMsg.innerText = "Access Granted. Initializing portal...";
+                    localStorage.setItem('token', data.token);
+                    setTimeout(() => {
+                        window.location.href = '/admin/admin-dashboard.html';
+                    }, 1000);
+                } else {
+                    throw new Error(data.message || "Authentication Handshake Failed");
+                }
+            } catch (error) {
+                statusMsg.className = "mt-6 text-center text-sm text-rose-400 font-medium";
+                statusMsg.innerText = error.message;
+                loginBtn.disabled = false;
+                loginBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        });
+    </script>
+</body>
+</html>

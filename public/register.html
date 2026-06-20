@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join durkwalmart - Agent Registration Portal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* Base Setup & System Colors */
+        :root {
+            --primary-blue: #0070f3;
+            --primary-green: #00ea87;
+            --primary-yellow: #ffd700;
+            --primary-purple: #a855f7;
+            --danger-red: #ff3333; /* Keep specific danger red */
+            --text-light: #e6edf3; /* Adjusted to match dashboard's default text color */
+            --text-dark: #0a0a0a;
+            --font-sharp: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --glass-bg: rgba(22, 27, 34, 0.7); /* Matched dashboard glass-panel background */
+            --glass-border: rgba(255, 255, 255, 0.08); /* Matched dashboard glass-panel border */
+            --glass-blur: blur(12px); /* Matched dashboard glass-panel blur */
+            --neon-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 234, 135, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-sharp);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glass Panel Definition (from dashboard.html) */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            /* Promote to its own compositor layer for GPU acceleration */
+            transform: translateZ(0);
+            will-change: backdrop-filter;
+        }
+
+        /* Mobile Performance Optimization: Lower blur radius and increase opacity */
+        @media (max-width: 768px) {
+            .glass-panel {
+                /* Reducing blur radius significantly lowers GPU overhead on mobile devices */
+                backdrop-filter: blur(6px) !important;
+                /* Compensate for less blur by making the background color more opaque */
+                background: rgba(13, 17, 23, 0.9) !important;
+            }
+        }
+        /* Dropdown Navigation Bar Portal */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            /* Inherits glass-panel properties */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6%;
+            z-index: 1000;
+        }
+        .navbar.glass-panel {
+            background: rgba(3, 5, 10, 0.85); /* Specific background for navbar */
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: none; /* Remove extra shadow from glass-panel */
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .logo span { color: var(--primary-green); }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+            align-items: center;
+        }
+        .nav-item { position: relative; }
+        .nav-item > a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 25px 0;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        .nav-item > a:hover { color: var(--primary-green); }
+
+        /* Auth Form Shell Wrapper Grid */
+        .auth-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 20px 60px 20px;
+        }
+
+        .auth-card {
+            /* Inherits glass-panel properties */
+            border-radius: 24px;
+            width: 100%;
+            max-width: 520px;
+            padding: 40px;
+            box-shadow: var(--neon-shadow);
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid var(--primary-green);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .auth-card.glass-panel {
+            box-shadow: var(--neon-shadow); /* Keep specific neon shadow */
+        }
+
+        .auth-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* --- Hacker Scanline Effect --- */
+        body::before {
+            content: " ";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            z-index: 9998;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.scanning::before {
+            opacity: 1;
+            animation: crtFlicker 0.1s infinite;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 234, 135, 0.2);
+            box-shadow: 0 0 15px rgba(0, 234, 135, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            animation: scanlineMove 6s linear infinite;
+            animation-play-state: paused;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        body.scanning::after {
+            opacity: 0.5;
+            animation-play-state: running;
+        }
+
+        @keyframes scanlineMove {
+            0% { transform: translateY(-10vh); }
+            100% { transform: translateY(110vh); }
+        }
+
+        @keyframes crtFlicker {
+            0% { opacity: 0.08; }
+            50% { opacity: 0.12; }
+            100% { opacity: 0.08; }
+        }
+
+        /* --- Terminal Glitch Animation --- */
+        @keyframes glitch {
+            0% { clip-path: inset(80% 0 0 0); }
+            10% { clip-path: inset(10% 0 85% 0); }
+            20% { clip-path: inset(80% 0 0 0); }
+            30% { clip-path: inset(10% 0 85% 0); }
+            40% { clip-path: inset(50% 0 30% 0); }
+            50% { clip-path: inset(10% 0 85% 0); }
+            100% { clip-path: inset(80% 0 0 0); }
+        }
+
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #03050a;
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--danger-red);
+            animation: glitch 3s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--primary-blue);
+            animation: glitch 2s infinite linear alternate-reverse;
+        }
+
+        /* Ensure content stays above scanline */
+        .auth-header, #registrationForm, .auth-footer-redirect {
+            position: relative;
+            z-index: 2;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .auth-header p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Structural Field Controls */
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(13, 17, 23, 0.6); /* Matched glass-input background */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Matched glass-input border */
+            border-radius: 0;
+            padding: 14px 16px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s ease;
+            padding-right: 45px; /* Space for eye icon */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        .toggle-password:hover { color: var(--primary-green); }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981; /* Matched glass-input:focus border-color */
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); /* Matched glass-input:focus box-shadow */
+        }
+
+        /* Password Strength Meter Infrastructure */
+        .strength-container {
+            margin-top: 8px;
+        }
+
+        .strength-bar-wrapper {
+            height: 4px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .strength-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Validation Alerts & Indicators */
+        .field-feedback {
+            font-size: 0.78rem;
+            margin-top: 6px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .feedback-error { color: var(--danger-red); display: block; }
+        .feedback-success { color: var(--primary-green); display: block; }
+
+        .input-invalid { border-color: var(--danger-red) !important; }
+        .input-valid { border-color: var(--primary-green) !important; }
+
+        @keyframes glassSlideIn {
+            from { transform: translateX(100%) scale(0.9); opacity: 0; }
+            to { transform: translateX(0) scale(1); opacity: 1; }
+        }
+        .glass-notification-node {
+            animation: glassSlideIn 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            background: rgba(16, 185, 129, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        /* Trigger Actions Layout */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-green);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(0, 234, 135, 0.15);
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: #00c672;
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(0, 234, 135, 0.3);
+        }
+
+        .btn-submit:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .auth-footer-redirect {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .auth-footer-redirect a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-footer-redirect a:hover { text-decoration: underline; }
+
+        /* Comprehensive Footer Configuration */
+        .footer {
+            background: rgba(2, 3, 7, 0.96);
+            backdrop-filter: var(--glass-blur);
+            border-top: 1px solid var(--glass-border);
+            padding: 40px 4% 25px 4%;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        .footer-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.4);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-wrap a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .footer-wrap a:hover { color: var(--primary-green); }
+
+        /* Responsive Mobile Settings */
+        /* Scrollbar styles from dashboard.html */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .back-to-top-visible {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
+        /* Hamburger Menu Animation from dashboard.html */
+        .hamburger-icon span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger-icon.hamburger-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger-icon.hamburger-active span:nth-child(2) { opacity: 0; }
+        .hamburger-icon.hamburger-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        @media (max-width: 560px) {
+            .auth-card { padding: 30px 20px; }
+            .footer-wrap { flex-direction: column; text-align: center; }
+            .footer-wrap div { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- System Shared Top Header Portal -->
+    <header class="navbar glass-panel">
+        <a href="index.html" class="logo">Durk<span>walmart</span></a>
+    </header>
+
+    <!-- Background Animation Layer -->
+    <canvas id="balloon-canvas" style="position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none;"></canvas>
+
+    <!-- Main Flex Shell Context Layer -->
+    <main class="auth-container" id="mainContent">
+        <!-- Scroll Progress Indicator (from dashboard.html) -->
+        <div id="scrollProgress" class="fixed top-0 left-0 right-0 h-1 bg-emerald-500 origin-left scale-x-0 z-50 transition-transform duration-100"></div>
+        <!-- Sidebar Overlay (not used on public pages, but kept for consistency if needed later) -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+        <div class="auth-card glass-panel">
+            <div class="auth-header">
+                <h1>Sign Up</h1>
+            </div>
+
+            <!-- Referrer Identity Resolution Notice -->
+            <div id="referrerNotice" class="hidden mb-6 p-4 glass-panel border-emerald-500/20 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400"></div>
+
+            <form id="registrationForm" novalidate>
+                
+                <!-- Field 1: Username Input Component -->
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="username" class="form-input glass-input" placeholder="amishy" required>
+                    </div>
+                    <div class="field-feedback" id="usernameFeedback"></div>
+                </div>
+
+                <!-- Field 2: Email Distribution Address Input -->
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" class="form-input glass-input" placeholder="example@gmail.com" required>
+                    </div>
+                    <div class="field-feedback" id="emailFeedback"></div>
+                </div>
+
+                <!-- Field 3: Phone Number Input (International Parser Triggered) -->
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="phone" class="form-input glass-input" placeholder="0712345678 (Safaricom)" required>
+                    </div>
+                    <div class="field-feedback" id="phoneFeedback"></div>
+                </div>
+
+                <!-- Field 4: Password Security Key Definition Field -->
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="form-input glass-input" placeholder="••••••••" required>
+                        <button type="button" class="toggle-password" data-target="password">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <!-- Client Strength Meter Interface -->
+                    <div class="strength-container">
+                        <div class="strength-bar-wrapper">
+                            <div class="strength-bar" id="strengthBar"></div>
+                        </div>
+                        <div class="strength-label" id="strengthLabel">Strength: Empty</div>
+                    </div>
+                    <div class="field-feedback" id="passwordFeedback"></div>
+                </div>
+
+                <!-- Field 5: Confirm Security Passphrase Matching Validation Layer -->
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" class="form-input glass-input" placeholder="••••••••" required>
+                        <button type="button" class="toggle-password" data-target="confirmPassword">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <div class="field-feedback" id="confirmFeedback"></div>
+                </div>
+
+                <!-- Submission Execution Action Button Trigger -->
+                <button type="submit" class="btn-submit" id="submitBtn">Create &amp; Proceed</button>
+
+            </form>
+
+            <div class="auth-footer-redirect">
+                Already community Member? <a href="login.html">Sign In</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Structural Minimal Form Footer Context Layer -->
+    <footer class="footer glass-panel">
+        <div class="footer-wrap">
+            <div>&copy; 2026 Durkwalmart Platform Inc. Secure Agent Onboarding.</div>
+        </div>
+    </footer>
+
+    <!-- Glassy Notification UI Section -->
+    <div id="glassNotifyContainer" class="fixed bottom-8 right-8 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Verification Logic, Encryption Analysis & Pipelining Engine Script Context -->
+    <script src="register.js"></script>
+</body>
+</html>

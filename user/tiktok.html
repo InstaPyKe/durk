@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch tiktok videos | DurkWalmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #e6edf3;
+            letter-spacing: -0.02em;
+        }
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.3);
+        }
+        .sidebar-transition {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .timer-paused-alert {
+            animation: pulseRed 1s infinite ease-in-out;
+            text-shadow: 0 0 12px rgba(255, 51, 51, 0.4);
+        }
+        @keyframes pulseRed {
+            0%, 100% { color: #ff3333; opacity: 1; transform: scale(1); }
+            50% { color: #f87171; opacity: 0.8; transform: scale(1.02); }
+        }
+        @keyframes pulseGreen {
+            0%, 100% { color: #00ea87; transform: scale(1); }
+            50% { color: #bbfce0; transform: scale(1.15); }
+        }
+        .balance-increment-active {
+            animation: pulseGreen 0.5s ease-in-out 4 !important;
+            text-shadow: 0 0 15px rgba(0, 234, 135, 0.6);
+        }
+        .tiktok-container {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 9 / 16;
+            margin: 0 auto;
+            border-radius: 2rem;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+            box-shadow: 
+                -4px 0 0 #25f4ee, 
+                4px 0 0 #fe2c55,
+                0 25px 50px -12px rgba(0,0,0,0.7);
+            border: 4px solid #000;
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 glass-panel sidebar-transition -translate-x-full lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-800">
+        <div class="flex flex-col h-full">
+            <div class="p-6 flex items-center justify-between">
+                <a href="../index.html" class="text-xl font-bold tracking-tight text-white">
+                    <span class="text-rose-500">Durk</span>Walmart
+                </a>
+                <button id="sidebarClose" class="lg:hidden p-5 text-gray-400 hover:text-white transition" title="Close Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    Home
+                </a>
+                <a href="yu-tube.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-youtube"></i>
+                    YouTube videos
+                </a>
+                <a href="tiktok.html" class="flex items-center gap-3 px-4 py-3 bg-rose-500/10 text-rose-400 rounded-xl font-medium border border-rose-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.9-.32-1.98-.23-2.81.33-.85.51-1.44 1.43-1.58 2.41-.05.35-.05.71-.01 1.07.13.98.67 1.89 1.51 2.39.82.51 1.88.58 2.74.19.86-.33 1.54-1.08 1.76-1.97.11-.47.12-.96.12-1.44.02-3.03 0-6.05.01-9.08z" /></svg>
+                    TikTok videos
+                </a>
+                <a href="playgames.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    Play games
+                </a>
+                <a href="survey.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01m-.01 4h.01" /></svg>
+                    Surveys
+                </a>
+                <a href="blog.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    Blog posts
+                </a>
+                <a href="spin.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2.5m9-.5a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Lucky spin
+                </a>
+                <a href="wallet.html" id="withdrawBtn" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                    Withdraw
+                </a>
+                <a href="refferal.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Referrals
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-800">
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Profile settings
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+        <!-- Sidebar Overlay -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+        <!-- Header -->
+        <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-4 lg:px-8 shrink-0 z-40">
+            <div class="flex items-center gap-4">
+                <button id="sidebarToggle" class="lg:hidden p-2.5 text-rose-500 bg-rose-500/10 border border-rose-500/20 rounded-xl hover:bg-rose-500/20 transition-all hamburger-icon">
+                    <span></span>
+                    <span></span> 
+                    <span></span> 
+                </button>
+                <h1 class="text-sm font-bold text-rose-500">TikTok</h1>
+                <div id="syncStatus" class="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/5 rounded-full transition-all duration-300">
+                    <span id="syncDot" class="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse"></span>
+                    <span id="syncText" class="text-[10px] font-medium text-gray-400">Online</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-6">
+                <!-- Profile -->
+                <div class="flex items-center gap-3 pl-4 border-l border-gray-800">
+                    <div class="text-right hidden sm:block">
+                        <div id="usernameDisplay" class="text-xs font-bold text-white">...</div>
+                        <div id="tiktokWalletBalance" class="text-[10px] text-rose-400 font-mono">KSh 0.00</div>
+                    </div>
+                    <img id="profileImage" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Bravin" alt="Profile" class="h-9 w-9 rounded-xl bg-gray-800 border border-gray-700">
+                    <button id="logoutBtn" class="p-2 text-gray-500 hover:text-rose-400 transition" title="Logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-4 lg:p-8">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="glass-panel p-6 rounded-3xl border border-white/5">
+                    <h2 id="taskTitle" class="text-xl font-bold text-white mb-2">Watch and earn</h2>
+                    <p id="taskDescription" class="text-gray-400 text-sm mb-4">Complete the video to get your reward.</p>
+
+                    <!-- Daily Progress Bar -->
+                    <div class="w-full max-w-xs mx-auto mb-10 space-y-2">
+                        <div class="flex justify-between text-[10px] font-semibold text-gray-500">
+                            <span>Today's goal</span>
+                            <span id="progressText">0 / 10</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden border border-white/5">
+                            <div id="progressFill" class="h-full bg-gradient-to-r from-rose-500 to-cyan-400 w-0 transition-all duration-500"></div>
+                        </div>
+                    </div>
+
+                    <div id="playerContainer" class="tiktok-container">
+                        <div id="tiktokPlayer" class="w-full h-full">
+                        </div>
+                        <div id="playerOverlay" class="absolute inset-0 bg-black/80 flex items-center justify-center z-10">
+                            <button id="startBtn" class="px-10 py-4 bg-white text-black font-bold rounded-full transition-all hover:scale-105 active:scale-95 text-sm" disabled>
+                                <i class="bi bi-play-fill mr-2"></i> Start
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="countdownContainer" class="mt-4 hidden text-center">
+                        <p id="timerDisplay" class="text-3xl font-bold text-white font-mono tracking-tighter">00:00</p>
+                        <p id="rewardAmount" class="text-sm text-cyan-400 font-bold mt-2">Earnings: KSh 0.00</p>
+                    </div>
+
+                    <div class="flex justify-center gap-4 mt-6">
+                        <button id="claimBtn" class="px-8 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-full transition-all disabled:opacity-30 active:scale-95 text-sm" disabled>
+                            Claim reward
+                        </button>
+                        <button id="skipBtn" class="px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-bold rounded-full transition-all border border-white/10 active:scale-95 text-sm">
+                            Skip
+                        </button>
+                    </div>
+                </div>
+                <div id="engineStatus" class="mt-6 text-center text-xs text-gray-500">Getting your video ready...</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="tiktok.js"></script>
+</body>
+</html>

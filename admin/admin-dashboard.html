@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | DurkWalmat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #e6edf3;
+        }
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+    <admin-header active="dashboard"></admin-header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <admin-sidebar active="dashboard"></admin-sidebar>
+
+        <!-- Main Viewport -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-8 shrink-0 z-40">
+            <h1 class="text-sm font-bold uppercase tracking-widest text-emerald-500">System Overview</h1>
+            <div class="flex items-center gap-4">
+                <span id="adminName" class="text-xs font-medium text-gray-400">Admin Terminal</span>
+                <div class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center">
+                    <i class="bi bi-person-badge text-emerald-500"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8">
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <a href="/admin/admin-management.html" class="glass-panel p-6 rounded-3xl border border-white/5 hover:bg-white/[0.02] transition-all block">
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Agents</p>
+                    <h2 id="statTotalUsers" class="text-3xl font-black text-white">0</h2>
+                    <p class="text-xs text-emerald-500 mt-2"><i class="bi bi-graph-up"></i> +12% growth</p>
+                </a>
+                <a href="/admin/admin-transactions.html" class="glass-panel p-6 rounded-3xl border border-white/5 text-emerald-400 hover:bg-white/[0.02] transition-all block">
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Gross Profits</p>
+                    <h2 id="statProfits" class="text-3xl font-black">KSh 0</h2>
+                    <p class="text-xs text-gray-500 mt-2">Platform Revenue</p>
+                </a>
+                <a href="/admin/admin-payouts.html" class="glass-panel p-6 rounded-3xl border border-white/5 text-rose-400 hover:bg-white/[0.02] transition-all block">
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Liabilities</p>
+                    <h2 id="statLiabilities" class="text-3xl font-black">KSh 0</h2>
+                    <p class="text-xs text-gray-500 mt-2">Pending Payouts</p>
+                </a>
+                <a href="/admin/admin-transactions.html" class="glass-panel p-6 rounded-3xl border border-white/5 text-blue-400 hover:bg-white/[0.02] transition-all block">
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Circulating Balance</p>
+                    <h2 id="statUserBalances" class="text-3xl font-black">KSh 0</h2>
+                    <p class="text-xs text-gray-500 mt-2">In User Wallets</p>
+                </a>
+            </div>
+
+            <!-- Global Referral Analytics -->
+            <div class="glass-panel p-6 rounded-3xl border border-white/5 shadow-xl">
+                <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6">Global Referral Network Distribution</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="flex flex-col p-4 bg-white/[0.02] rounded-2xl border border-white/5">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Level 1 Nodes</span>
+                        <div class="flex items-end justify-between mt-2">
+                            <span id="statL1Count" class="text-2xl font-black text-white">0</span>
+                            <span id="statL1Earnings" class="text-xs font-bold text-emerald-500">KSh 0</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col p-4 bg-white/[0.02] rounded-2xl border border-white/5">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Level 2 Nodes</span>
+                        <div class="flex items-end justify-between mt-2">
+                            <span id="statL2Count" class="text-2xl font-black text-white">0</span>
+                            <span id="statL2Earnings" class="text-xs font-bold text-emerald-500">KSh 0</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col p-4 bg-white/[0.02] rounded-2xl border border-white/5">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Level 3 Nodes</span>
+                        <div class="flex items-end justify-between mt-2">
+                            <span id="statL3Count" class="text-2xl font-black text-white">0</span>
+                            <span id="statL3Earnings" class="text-xs font-bold text-emerald-500">KSh 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="glass-panel p-6 rounded-3xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6">User Acquisition Growth</h3>
+                    <div class="relative h-[300px]">
+                        <canvas id="userGrowthChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-panel p-6 rounded-3xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6">Referral Distribution</h3>
+                    <div class="relative h-[300px]">
+                        <canvas id="referralDistributionChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-panel p-6 rounded-3xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6">Financial Flux (Profits vs Payouts)</h3>
+                    <div class="relative h-[300px]">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- User Management Section -->
+                <div class="lg:col-span-2 glass-panel rounded-3xl overflow-hidden border border-white/5">
+                    <div class="p-6 border-b border-gray-800/50 flex items-center justify-between bg-white/[0.02]">
+                        <div>
+                            <h3 class="text-xs font-black uppercase tracking-widest text-white">Agent Matrix Control</h3>
+                            <p class="text-[10px] text-gray-500 uppercase mt-1">Direct Database Interface</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                    <th class="px-8 py-5">Agent Identity</th>
+                                    <th class="px-8 py-5">Phone Node</th>
+                                    <th class="px-8 py-5">Clearance</th>
+                                    <th class="px-8 py-5">Balance</th>
+                                    <th class="px-8 py-5 text-right">Operations</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody" class="text-xs font-medium">
+                                <!-- Populated by JS -->
+                                <tr><td colspan="4" class="px-8 py-10 text-center text-gray-500 uppercase tracking-widest text-[10px]">Synchronizing Matrix...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Activities Section -->
+                <div class="glass-panel rounded-3xl overflow-hidden border border-white/5 flex flex-col">
+                    <div class="p-6 border-b border-gray-800/50 bg-white/[0.02]">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-white">Recent Activities</h3>
+                        <p class="text-[10px] text-gray-500 uppercase mt-1">Live Feed</p>
+                    </div>
+                    <div id="activityLog" class="flex-1 overflow-y-auto p-6 space-y-4 max-h-[500px]">
+                        <div class="text-center text-gray-500 text-[10px] uppercase py-10">Synchronizing feed...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for CRUD (Hidden by default) -->
+    <div id="userModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-[2.5rem] p-8 shadow-2xl">
+            <h2 id="modalTitle" class="text-xl font-black text-white uppercase tracking-tighter mb-6">Modify Agent Parameters</h2>
+            <form id="userForm" class="space-y-4">
+                <!-- Form fields will be dynamically handled in JS -->
+            </form>
+        </div>
+        </div>
+    </div>
+
+    <script src="/admin/admin-nav.js"></script>
+    <script src="/admin/admin-dashboard.js"></script>
+</body>
+</html>

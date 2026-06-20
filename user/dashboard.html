@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | durkwalmart Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: #e6edf3;
+        }
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .sidebar-transition {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay {
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .back-to-top-visible {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
+        /* Hamburger Menu Animation */
+        .hamburger-icon span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger-icon.hamburger-active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .hamburger-icon.hamburger-active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-icon.hamburger-active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+        /* Loading Spinner Styles */
+        .loading-spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 17, 23, 0.9); /* Dark overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #10b981; /* Emerald green */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        @keyframes flowerPulse {
+            0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-50%) scale(1.08); opacity: 0.8; }
+        }
+
+        /* Rose Flower Leaf Decoration */
+        .rose-flower-container {
+            position: absolute;
+            right: 8%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 120px;
+            height: 120px;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.6;
+            filter: drop-shadow(0 0 15px rgba(251, 113, 133, 0.3));
+            animation: flowerPulse 4s ease-in-out infinite;
+        }
+        .flower-stem {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 90px;
+            background: linear-gradient(to bottom, #059669, #064e3b);
+            margin-left: -1.5px;
+            border-radius: 4px;
+            z-index: 0;
+        }
+        .flower-leaf {
+            position: absolute;
+            width: 18px;
+            height: 32px;
+            background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
+            border-radius: 0 100% 50% 100%;
+            z-index: 0;
+        }
+        .leaf-left { top: 75px; left: 50%; margin-left: -20px; transform: rotate(-45deg); }
+        .leaf-right { top: 95px; left: 50%; margin-left: 2px; transform: rotate(45deg); }
+
+        .leaf-petal {
+            position: absolute;
+            width: 35px;
+            height: 65px;
+            background: linear-gradient(135deg, #fda4af 0%, #f43f5e 100%);
+            border-radius: 0 100% 50% 100%;
+            top: 50%;
+            left: 50%;
+            margin-top: -32.5px;
+            margin-left: -17.5px;
+        }
+        .leaf-1 { transform: rotate(0deg) translate(0, -25px); }
+        .leaf-2 { transform: rotate(72deg) translate(0, -25px); }
+        .leaf-3 { transform: rotate(144deg) translate(0, -25px); }
+        .leaf-4 { transform: rotate(216deg) translate(0, -25px); }
+        .leaf-5 { transform: rotate(288deg) translate(0, -25px); }
+
+        /* Session Expired Toast Styles */
+        .session-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 20px;
+            color: #e6edf3;
+            font-size: 10px;
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: toastSlideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            max-width: 300px;
+        }
+        .resync-btn {
+            background: #10b981;
+            color: #064e3b;
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .resync-btn:hover {
+            background: #34d399;
+            transform: scale(1.02);
+        }
+        @keyframes toastSlideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Falling Petals Background Canvas */
+        #petal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+    <canvas id="petal-canvas"></canvas>
+
+    <div id="impersonationBanner" class="hidden bg-amber-500 text-black py-2 px-4 text-center text-[10px] font-black uppercase tracking-[0.2em] sticky top-0 z-[100] shadow-xl">
+        <i class="bi bi-shield-exclamation mr-2"></i> Impersonation Mode Active // Viewing Agent Node
+        <button id="returnToAdminBtn" class="ml-4 px-3 py-1 bg-black text-white rounded-lg hover:bg-white hover:text-black transition-all">Terminate & Return to Admin</button>
+    </div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 glass-panel sidebar-transition -translate-x-full lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-800">
+        <div class="flex flex-col h-full">
+            <div class="p-2 flex items-center justify-between">
+                <a href="../index.html" class="text-2xl font-black tracking-tighter text-white">
+                    Durk<span class="text-emerald-500">walmart</span>
+                </a>
+                <button id="sidebarClose" class="lg:hidden p-5 text-gray-400 hover:text-white transition" title="Close Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 bg-emerald-500/10 text-emerald-400 rounded-xl font-medium border border-emerald-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    Dashboard
+                </a>
+                <a href="yu-tube.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <i class="bi bi-youtube"></i>
+                    YouTube Engine
+                </a>
+                <a href="tiktok.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.9-.32-1.98-.23-2.81.33-.85.51-1.44 1.43-1.58 2.41-.05.35-.05.71-.01 1.07.13.98.67 1.89 1.51 2.39.82.51 1.88.58 2.74.19.86-.33 1.54-1.08 1.76-1.97.11-.47.12-.96.12-1.44.02-3.03 0-6.05.01-9.08z" /></svg>
+                    TikTok Tasks
+                </a>
+                <a href="playgames.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    Play Games
+                </a>
+                <a href="survey.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01m-.01 4h.01" /></svg>
+                    Surveys
+                </a>
+                <a href="blog.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                 Blog Writtings
+                </a>
+                <a href="spin.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2.5m9-.5a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Spin & Win
+                </a>
+                <a href="wallet.html" id="withdrawBtn" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                    Withdraw Funds
+                </a>
+                <a href="refferal.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Refferal Network
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-800">
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Security Settings
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Context -->
+    <div class="flex-1 flex flex-col min-w-0">
+        
+        <!-- Sidebar Overlay -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+        <!-- Scroll Progress Indicator -->
+        <div id="scrollProgress" class="fixed top-0 left-0 lg:left-64 right-0 h-1 bg-emerald-500 origin-left scale-x-0 z-50 transition-transform duration-100"></div>
+
+        <!-- Header -->
+        <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-4 lg:px-8 shrink-0 z-40">
+            <div class="flex items-center gap-4">
+                <button id="sidebarToggle" class="lg:hidden p-2.5 text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/20 transition-all hamburger-icon">
+                    <span></span>
+                    <span></span> 
+                    <span></span> 
+                </button>
+                <h1 class="text-sm font-bold uppercase tracking-widest text-emerald-500">Dashboard</h1>
+                <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full transition-all duration-300">
+                    <span id="syncDot" class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span id="syncText" class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Online</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-6">
+                <!-- Notifications -->
+                <button class="relative p-2 text-gray-400 hover:text-emerald-400 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                </button>
+
+                <!-- Profile -->
+                <div class="flex items-center gap-3 pl-4 border-l border-gray-800">
+                    <div class="text-right hidden sm:block">
+                        <div id="usernameDisplay" class="text-xs font-bold text-white">...</div>
+                    </div>
+                    <img id="profileImage" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Bravin" alt="Profile" class="h-9 w-9 rounded-xl bg-gray-800 border border-gray-700">
+                    <button id="logoutBtn" class="p-2 text-gray-400 hover:text-rose-400 transition" title="Logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Viewport -->
+        <main id="mainContent" class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-12">
+            
+            <!-- Welcome Banner -->
+            <section class="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden relative">
+                <div class="relative z-10">
+                    <h2 class="text-2xl sm:text-3xl font-black text-white leading-tight">Welcome Back, <span id="welcomeName">...</span>!</h2>
+                    <p class="text-gray-400 mt-2 text-sm max-w-lg">What's your todays goal? Here I will show your analytics and performance! You have <span id="pendingTasksCount" class="text-emerald-400 font-bold">...</span> pending tasks available in your priority queue.</p>
+                </div>
+                <div class="flex gap-4 relative z-10">
+                    <a href="yu-tube.html" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-black text-sm font-bold rounded-xl transition shadow-lg shadow-emerald-500/20">Execute Tasks</a>
+                </div>
+                <!-- Rose Flower Decoration -->
+                <div class="rose-flower-container">
+                    <div class="flower-stem"></div>
+                    <div class="flower-leaf leaf-left"></div>
+                    <div class="flower-leaf leaf-right"></div>
+                    <div class="leaf-petal leaf-1"></div>
+                    <div class="leaf-petal leaf-2"></div>
+                    <div class="leaf-petal leaf-3"></div>
+                    <div class="leaf-petal leaf-4"></div>
+                    <div class="leaf-petal leaf-5"></div>
+                </div>
+                <!-- Decorative Background Element -->
+                <div class="absolute -right-10 -top-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            </section>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-emerald-500">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Your Balance</div>
+                    <div id="totalBalance" class="text-4xl sm:text-5xl font-black bg-gradient-to-r from-emerald-400 via-emerald-200 to-cyan-400 bg-clip-text text-transparent mt-2 font-mono drop-shadow-md">KSh 0.00</div>
+                    <div class="text-[10px] text-emerald-400 mt-2 flex items-center gap-1 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                        +12.5% vs last week
+                    </div>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-blue-500">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Spins & Referral Earnings</div>
+                    <div id="totalEarnings" class="text-4xl sm:text-5xl font-black bg-gradient-to-r from-blue-400 via-sky-200 to-cyan-400 bg-clip-text text-transparent mt-2 font-mono drop-shadow-md">KSh 0.00</div>
+                    <div class="text-[10px] text-blue-400 mt-2 flex items-center gap-1 font-medium">Lifetime Signature Accumulation</div>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-amber-500">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Total Withdrawn</div>
+                    <div id="totalWithdrawn" class="text-4xl sm:text-5xl font-black bg-gradient-to-r from-amber-400 via-yellow-200 to-orange-400 bg-clip-text text-transparent mt-2 font-mono drop-shadow-md">KSh 0.00</div>
+                    <div class="text-[10px] text-amber-400 mt-2 flex items-center gap-1 font-medium">Cleared via STK / PESAPAL Gateways</div>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-purple-500">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Activation Fee</div>
+                    <div id="userPlan" class="text-4xl sm:text-5xl font-black bg-gradient-to-r from-purple-400 via-fuchsia-200 to-pink-400 bg-clip-text text-transparent mt-2 uppercase drop-shadow-md"></div>
+                    <div id="userPlanSubtitle" class="text-[10px] text-purple-400 mt-2 flex items-center gap-1 font-medium">Fee: KSh 500.00 Paid</div>
+                </div>
+            </div>
+
+            <!-- Unified Network Matrix Section -->
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border-l-4 border-l-rose-500 relative overflow-hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative z-10">
+                    <div class="space-y-3">
+                        <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Refferals Network</div>
+                        <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+                            <div class="text-4xl font-black text-white font-mono"><span id="totalReferrals">0</span> <span class="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">Nodes</span></div>
+                            <div class="text-2xl font-black text-emerald-400 font-mono">KSh <span id="referralEarnings">0.00</span></div>
+                        </div>
+                        <p class="text-[10px] text-gray-500 uppercase font-medium tracking-wide">Refferal Payments</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4 sm:gap-12 w-full md:w-auto border-t md:border-t-0 md:border-l border-gray-800 pt-6 md:pt-0 md:pl-10">
+                        <div class="text-center md:text-left">
+                            <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">L1 Team</div>
+                            <div id="teamL1" class="text-xl font-black text-emerald-500 font-mono">0</div>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">L2 Team</div>
+                            <div id="teamL2" class="text-xl font-black text-blue-500 font-mono">0</div>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">L3 Team</div>
+                            <div id="teamL3" class="text-xl font-black text-indigo-500 font-mono">0</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Background Accents -->
+                <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-rose-500/5 rounded-full blur-2xl"></div>
+            </div>
+
+            <!-- Unified Sector Earnings Matrix -->
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border-l-4 border-l-blue-500 relative overflow-hidden">
+                <div class="space-y-6 relative z-10">
+                    <div class="flex items-center justify-between border-b border-gray-800/50 pb-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                DISTRIBUTED TASKS
+                            </h3>
+                            <p class="text-[10px] text-gray-500 uppercase font-medium tracking-wide mt-1">Categorised Earnings</p>
+                        </div>
+                        <span class="text-[10px] font-mono text-gray-500 bg-black/20 px-2 py-1 rounded"></span>
+                    </div>
+
+                    <div id="earningsBreakdownContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                        <!-- Sector yields injected via JS -->
+                    </div>
+                </div>
+                <!-- Background Accents -->
+                <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl"></div>
+            </div>
+
+            <!-- Middle Row: Analytics & Progress -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Analytics Chart -->
+                <div class="lg:col-span-8 glass-panel rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Earnings Analytic Flow</h3>
+                        <select id="chartPeriodSelect" class="bg-black/40 border border-gray-800 text-[10px] text-white rounded-lg px-2 py-1 outline-none">
+                            <option value="weekly">Last 7 Days</option>
+                            <option value="monthly">Last 30 Days</option>
+                        </select>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="analyticsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Task Progress -->
+                <div class="lg:col-span-4 glass-panel rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-1">Weekly Objective</h3>
+                        <p id="weeklyObjectiveText" class="text-[11px] text-gray-500">Syncing...</p>
+                        
+                        <div class="mt-8 relative flex items-center justify-center">
+                            <!-- Circular Progress Simulation -->
+                            <svg class="w-32 h-32 transform -rotate-90">
+                                <circle cx="64" cy="64" r="58" stroke="currentColor" stroke-width="8" fill="transparent" class="text-gray-800" />
+                                <circle id="circularProgress" cx="64" cy="64" r="58" stroke="currentColor" stroke-width="8" fill="transparent" class="text-emerald-500" stroke-dasharray="364.4" stroke-dashoffset="364.4" stroke-linecap="round" />
+                            </svg>
+                            <div class="absolute text-center">
+                                <div id="progressPercent" class="text-2xl font-black text-white">0%</div>
+                                <div class="text-[9px] text-gray-500 uppercase">Synced</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 mt-6">
+                        <div class="flex justify-between text-[10px] font-mono">
+                            <span class="text-gray-400">Target Signature:</span>
+                            <span id="targetFraction" class="text-emerald-400">0 / 0</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div id="progressLine" class="h-full bg-emerald-500 w-0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Modules Section -->
+            <section class="space-y-6">
+                <div class="sticky top-0 z-30 py-4 glass-panel -mx-4 px-4 lg:-mx-8 lg:px-8 border-y border-gray-800 flex items-center justify-between backdrop-blur-xl">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                        Available Task Modules
+                    </h3>
+                    <span class="text-[10px] font-mono text-gray-500">Real-time Node Access</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <!-- Ads Task -->
+                    <div class="glass-panel rounded-2xl p-6 group hover:border-emerald-500/30 transition-all duration-300">
+                        <div class="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h4 class="font-bold text-white tracking-tight">Video Streams</h4>
+                        <p class="text-xs text-gray-500 mt-2 leading-relaxed">Watch high-velocity ad streams to earn $0.50 per verified signature.</p>
+                        <a href="yu-tube.html" class="mt-4 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-emerald-400 group-hover:gap-2 transition-all">
+                            Initialize Engine <span>&rarr;</span>
+                        </a>
+                    </div>
+
+                    <!-- TikTok Task -->
+                    <div class="glass-panel rounded-2xl p-6 group hover:border-rose-500/30 transition-all duration-300">
+                        <div class="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500 mb-4">
+                            <i class="bi bi-tiktok text-xl"></i>
+                        </div>
+                        <h4 class="font-bold text-white tracking-tight">TikTok Engine</h4>
+                        <p class="text-xs text-gray-500 mt-2 leading-relaxed">Validate social sequences to synchronize reward allocation metrics.</p>
+                        <a href="tiktok.html" class="mt-4 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-rose-400 group-hover:gap-2 transition-all">
+                            Initialize Flux <span>&rarr;</span>
+                        </a>
+                    </div>
+
+                    <!-- Survey Task -->
+                    <div class="glass-panel rounded-2xl p-6 group hover:border-blue-500/30 transition-all duration-300">
+                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h4 class="font-bold text-white tracking-tight">Market Analytics</h4>
+                        <p class="text-xs text-gray-500 mt-2 leading-relaxed">Provide data metrics on consumer preference for decentralized reward pools.</p>
+                        <a href="survey.html" class="mt-4 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-blue-400 group-hover:gap-2 transition-all">
+                            Open Wizard <span>&rarr;</span>
+                        </a>
+                    </div>
+
+                    <!-- Blog Task -->
+                    <div class="glass-panel rounded-2xl p-6 group hover:border-amber-500/30 transition-all duration-300">
+                        <div class="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                        </div>
+                        <h4 class="font-bold text-white tracking-tight">Content Distribution</h4>
+                        <p class="text-xs text-gray-500 mt-2 leading-relaxed">Submit high-quality blog insights to trigger community reward algorithms.</p>
+                        <a href="blog.html" class="mt-4 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-amber-400 group-hover:gap-2 transition-all">
+                            Create Post <span>&rarr;</span>
+                        </a>
+                    </div>
+
+                    <!-- Spin Task -->
+                    <div class="glass-panel rounded-2xl p-6 group hover:border-indigo-500/30 transition-all duration-300">
+                        <div class="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500 mb-4">
+                            <i class="bi bi-controller text-xl"></i>
+                        </div>
+                        <h4 class="font-bold text-white tracking-tight">Quantum Spin</h4>
+                        <p class="text-xs text-gray-500 mt-2 leading-relaxed">Engage the probability matrix to synchronize daily bonus reward distributions.</p>
+                        <a href="spin.html" class="mt-4 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-indigo-400 group-hover:gap-2 transition-all">
+                            Engage Engine <span>&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Descriptive Footer (Moved inside scroll area) -->
+            <footer class="glass-panel border-t border-gray-800 p-8 sm:p-12 mt-12 -mx-4 lg:-mx-8 border-x-0 border-b-0">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 sm:gap-8">
+                    <div class="md:col-span-1 space-y-4">
+                        <a href="../public/index.html" class="text-xl font-black tracking-tighter text-white">
+                            durk<span class="text-emerald-500">walmart</span>
+                        </a>
+                        <p class="text-[11px] text-gray-500 leading-relaxed">
+                            The ultimate traffic capture engine. Empowering authentic digital engagement through high-velocity task validation and decentralized reward distribution systems.
+                        </p>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-widest">Navigation</h4>
+                        <ul class="text-[11px] text-gray-400 space-y-2 font-medium">
+                            <li><a href="ads.html" class="hover:text-emerald-400 transition">Ads Engine</a></li>
+                            <li><a href="survey.html" class="hover:text-emerald-400 transition">Market Research</a></li>
+                            <li><a href="blog.html" class="hover:text-emerald-400 transition">Content Portal</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-widest">Support</h4>
+                        <ul class="text-[11px] text-gray-400 space-y-2 font-medium">
+                            <li><a href="#" class="hover:text-emerald-400 transition">Node Status</a></li>
+                            <li><a href="#" class="hover:text-emerald-400 transition">API Documentation</a></li>
+                            <li><a href="#" class="hover:text-emerald-400 transition">Help Center</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-widest">Security</h4>
+                        <ul class="text-[11px] text-gray-400 space-y-2 font-medium">
+                            <li><a href="#" class="hover:text-emerald-400 transition">Privacy Protocol</a></li>
+                            <li><a href="#" class="hover:text-emerald-400 transition">AML Compliance</a></li>
+                            <li><a href="#" class="hover:text-emerald-400 transition">Terminal Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-[10px] text-gray-600 font-mono uppercase tracking-tighter">
+                        &copy; 2026 durkwalmart platform inc // sys_node: 0x92f1...7721
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                            <span class="text-[9px] text-emerald-500 font-bold uppercase tracking-widest">Global Matrix Online</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Back to Top Button -->
+        <button id="backToTop" class="fixed bottom-8 right-8 p-3 bg-emerald-500 text-black rounded-full shadow-lg opacity-0 visibility-hidden transition-all duration-300 translate-y-10 z-50 hover:bg-emerald-400" title="Back to Top">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+        </button>
+
+    </div>
+
+    <!-- Referral Welcome Modal -->
+    <div id="referralModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 modal-overlay opacity-0">
+        <div class="w-full max-w-sm glass-panel rounded-2xl p-6 text-center shadow-2xl border border-emerald-500/20 transform scale-95 transition-all duration-300">
+            <div class="mx-auto w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-white tracking-tight">Network Entry Validated</h3>
+            <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+                Welcome to the matrix! Your node has been successfully linked. You were referred by <span id="referrerDisplayName" class="text-emerald-400 font-bold"></span>.
+            </p>
+            <button 
+                type="button" 
+                id="closeReferralModal"
+                class="mt-5 w-full bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-bold py-2.5 rounded-xl transition-colors"
+            >
+                Acknowledge Link
+            </button>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+
+    <!-- Loading Spinner Overlay -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Session Expired Notification Toast -->
+    <div id="sessionToast" class="session-toast">
+        <div class="flex items-center gap-4">
+            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+            <div class="flex flex-col">
+                <span class="font-black uppercase tracking-widest text-emerald-500">Security Clearance Lost</span>
+                <span class="text-gray-400 font-medium leading-tight">Node synchronization failed. Re-authentication required to secure assets.</span>
+            </div>
+        </div>
+        <button id="resyncSessionBtn" class="resync-btn">Re-Sync Node Access</button>
+    </div>
+</body>
+</html>

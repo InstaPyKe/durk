@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game center | durkwalmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+        :root {
+            --primary-green: #00ea87;
+            --primary-indigo: #6366f1;
+            --glass-bg: rgba(22, 27, 34, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+        body {
+            background: radial-gradient(circle at 50% -20%, #1e293b, #0d1117);
+            color: #e6edf3;
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3 {
+            letter-spacing: -0.02em;
+        }
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* --- Global System Notification Engine --- */
+        #systemNotification {
+            position: fixed; bottom: 40px; left: 40px; z-index: 9999;
+            padding: 16px 22px; border-radius: 16px;
+            background: rgba(0, 234, 135, 0.08);
+            backdrop-filter: blur(20px); border: 1px solid rgba(0, 234, 135, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: none; align-items: center; gap: 15px; max-width: 380px;
+            animation: slideInNotify 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: opacity 0.5s ease;
+        }
+        @keyframes slideInNotify { from { transform: translateX(-50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .notif-title { font-size: 0.75rem; font-weight: 900; color: var(--primary-green); text-transform: uppercase; letter-spacing: 1.5px; }
+        .notif-message { font-size: 0.65rem; font-style: italic; color: rgba(255, 255, 255, 0.9); line-height: 1.4; }
+
+        /* Puzzle Specific Polish */
+        .puzzle-tile {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.25rem;
+            color: white; border-radius: 1.25rem;
+        }
+        .puzzle-tile:hover { background: rgba(99, 102, 241, 0.1); border-color: var(--primary-indigo); transform: scale(1.05); }
+        .puzzle-tile.empty { background: transparent; border: 2px dashed rgba(255, 255, 255, 0.05); cursor: default; }
+
+        .sidebar-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .back-to-top-visible { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; }
+        
+        /* Hamburger Menu Animation */
+        .hamburger-icon span { display: block; width: 20px; height: 2px; background: currentColor; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger-icon.hamburger-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger-icon.hamburger-active span:nth-child(2) { opacity: 0; }
+        .hamburger-icon.hamburger-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+    <canvas id="petal-canvas" class="fixed inset-0 z-[-1] pointer-events-none opacity-20"></canvas>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-[60] w-64 glass-panel sidebar-transition -translate-x-full lg:translate-x-0 border-r border-gray-800 flex flex-col h-full shadow-2xl lg:shadow-none">
+        <div class="flex flex-col h-full">
+            <div class="p-6 flex items-center justify-between">
+                <a href="../index.html" class="text-2xl font-black tracking-tighter text-white">
+                    Durk<span class="text-emerald-500">walmat</span>
+                </a>
+                <button id="sidebarClose" class="lg:hidden text-gray-400 hover:text-white transition">
+                    <i class="bi bi-x-lg text-lg"></i>
+                </button>
+            </div>
+            <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-speedometer2"></i> dashboard
+                </a>
+                <a href="yu-tube.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-youtube"></i> youtube tasks
+                </a>
+                <a href="tiktok.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-tiktok"></i> tiktok tasks
+                </a>
+                <a href="playgames.html" class="flex items-center gap-3 px-4 py-3 bg-emerald-500/10 text-emerald-400 rounded-xl font-bold text-[10px] uppercase tracking-widest border border-emerald-500/20">
+                    <i class="bi bi-controller"></i> play games
+                </a>
+                <a href="survey.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-clipboard-data"></i> surveys
+                </a>
+                <a href="blog.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-pencil-square"></i> write and earn
+                </a>
+                <a href="spin.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-patch-check"></i> daily spin
+                </a>
+                <a href="wallet.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-wallet2"></i> withdraw
+                </a>
+                <a href="refferal.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-people"></i> referrals
+                </a>
+            </nav>
+            <div class="p-6 border-t border-gray-800 space-y-2">
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-gear"></i> settings
+                </a>
+                <button id="logoutBtn" class="w-full flex items-center gap-3 px-4 py-3 text-rose-500 hover:bg-rose-500/10 rounded-xl transition font-bold text-[10px] uppercase tracking-widest">
+                    <i class="bi bi-box-arrow-left"></i> logout
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Context -->
+    <div class="flex-1 flex flex-col min-w-0">
+        <!-- Sidebar Overlay -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+        <!-- Scroll Progress Indicator -->
+        <div id="scrollProgress" class="fixed top-0 left-0 lg:left-64 right-0 h-1 bg-indigo-500 origin-left scale-x-0 z-50 transition-transform duration-100"></div>
+
+        <!-- Header -->
+        <header class="h-20 glass-panel border-b border-gray-800 flex items-center justify-between px-6 lg:px-12 shrink-0 z-40">
+            <div class="flex items-center gap-4">
+                <button id="sidebarToggle" class="lg:hidden p-2.5 text-indigo-500 bg-indigo-500/10 border border-indigo-500/20 rounded-xl transition-all hamburger-icon">
+                    <span></span><span></span><span></span>
+                </button>
+                <h1 class="text-xs font-black uppercase tracking-[0.2em] text-indigo-500">Game <span class="text-white">zone</span></h1>
+                <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
+                    <span id="syncDot" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span id="syncText" class="text-[8px] font-black text-indigo-500 uppercase tracking-widest">System online</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3 pl-6 border-l border-gray-800">
+                    <div class="text-right hidden sm:block">
+                        <div id="usernameDisplay" class="text-xs font-black text-white">...</div>
+                        <div class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Premium member</div>
+                    </div>
+                    <img id="profileImage" src="" class="h-10 w-10 rounded-2xl bg-gray-800 border border-white/5 shadow-xl">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Viewport -->
+        <main id="mainContent" class="flex-1 overflow-y-auto p-4 lg:p-12 space-y-12">
+            <header class="max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                    <h1 class="text-3xl font-black tracking-tight">Play <span class="text-indigo-500">games</span></h1>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.3em] mt-2">Play and earn rewards</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="glass-panel px-4 py-2 rounded-xl border-l-4 border-indigo-500">
+                        <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Total earned</p>
+                        <p id="gamesWalletBalance" class="text-sm font-black text-white font-mono">KSh 0.00</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="w-full max-w-3xl mx-auto glass-panel rounded-[2.5rem] p-8 sm:p-12 space-y-8 flex flex-col border-t-2 border-indigo-500/20">
+                <!-- Task Header -->
+                <div class="flex items-start justify-between">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-3">
+                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.5)] animate-pulse"></span>
+                            <h2 class="text-xl font-black text-white tracking-tight uppercase">Number puzzle</h2>
+                        </div>
+                        <p class="text-[11px] italic text-gray-500 max-w-md">Put the numbers in order from 1 to 8 to finish the task and get your reward.</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="rewardAmount" class="text-xs font-black text-emerald-400 uppercase tracking-[0.2em] bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20">KSh 10.00</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Game Arena Box -->
+                <div class="relative w-full h-[400px] bg-black/40 border border-white/5 rounded-[2rem] mt-5 overflow-hidden flex items-center justify-center group shadow-inner" id="gameArena">
+                    <!-- Overlay Mask for Start/Complete States -->
+                    <div id="gameScreenOverlay" class="absolute inset-0 bg-[#0d1117]/95 z-10 flex flex-col items-center justify-center p-8 text-center backdrop-blur-sm">
+                        <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 mb-6 border border-indigo-500/20">
+                            <i class="bi bi-cpu text-3xl"></i>
+                        </div>
+                        <p id="overlayMessage" class="text-xs text-gray-400 font-medium max-w-xs leading-relaxed italic uppercase tracking-wider">Look at the grid and move the numbers to put them in order.</p>
+                        <button type="button" id="startGameBtn" class="mt-8 px-10 py-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-black rounded-2xl transition-all uppercase tracking-widest shadow-xl shadow-indigo-900/20 active:scale-95">
+                            Start game
+                        </button>
+                    </div>
+
+                    <!-- Puzzle Grid Container -->
+                    <div id="puzzleGrid" class="hidden grid grid-cols-3 gap-4 p-6 w-[300px] h-[300px]">
+                        <!-- Tiles injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Game Bottom Controls & Reward Claims -->
+                <div class="space-y-6 pt-6 border-t border-white/5 mt-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Game progress</span>
+                            <span id="gameScoreLabel" class="text-xs font-black text-indigo-400 font-mono tracking-tighter uppercase">0 / 8 numbers in place</span>
+                        </div>
+                        <span id="gameStatusBadge" class="text-[9px] font-black bg-white/5 text-gray-400 px-3 py-1 rounded-full uppercase tracking-tighter border border-white/10">Ready</span>
+                    </div>
+                    
+                    <!-- Progress Indicator Track -->
+                    <div class="w-full h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/5">
+                        <div id="gameProgressBar" class="h-full bg-gradient-to-r from-indigo-600 to-indigo-400 w-0 transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.3)]"></div>
+                    </div>
+
+                    <button 
+                        type="button" 
+                        id="claimGameRewardBtn" 
+                        disabled
+                        class="w-full bg-white/5 text-gray-600 cursor-not-allowed py-5 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.3em] border border-white/5 transition-all flex items-center justify-center gap-3 active:scale-95"
+                    >
+                        <i class="bi bi-shield-lock-fill text-sm"></i>
+                        <span>Claim reward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Descriptive Footer Area -->
+            <footer class="pt-12 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="text-[10px] text-gray-600 font-mono uppercase tracking-tighter">
+                    &copy; 2026 durkwalmart platform inc // neural_node: 0xPuzzle
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                        <span class="text-[9px] text-emerald-500 font-bold uppercase tracking-widest">Global Matrix Online</span>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Global Glassy Notification Portal -->
+    <div id="systemNotification">
+        <div class="notif-icon-box" id="notifIcon"></div>
+        <div class="notif-text-box">
+            <div class="notif-title" id="notifTitle">SYSTEM</div>
+            <div class="notif-message" id="notifMessage">Syncing telemetry data...</div>
+        </div>
+    </div>
+
+    <button id="backToTop" class="fixed bottom-8 right-8 z-50 p-4 rounded-full glass-panel text-indigo-500 opacity-0 invisible transition-all duration-500 hover:text-white hover:border-indigo-500/50 shadow-2xl translate-y-10" title="Back to Top">
+        <i class="bi bi-arrow-up text-xl"></i>
+    </button>
+
+    <script>
+        // Global System Messaging Interface
+        window.showSystemMessage = function(message, type = 'success') {
+            const notification = document.getElementById('systemNotification');
+            const iconBox = document.getElementById('notifIcon');
+            const titleEl = document.getElementById('notifTitle');
+            const msgEl = document.getElementById('notifMessage');
+
+            const types = {
+                success: { title: 'Sync Success', color: '#00ea87', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#00ea87" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' },
+                error: { title: 'Node Fault', color: '#ff4d4d', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#ff4d4d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>' },
+                info: { title: 'Matrix Sync', color: '#6366f1', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>' }
+            };
+
+            const config = types[type] || types.success;
+            if (iconBox) iconBox.innerHTML = config.svg;
+            if (titleEl) { titleEl.innerText = config.title; titleEl.style.color = config.color; }
+            if (msgEl) msgEl.innerText = message;
+
+            notification.style.display = 'flex';
+            notification.style.opacity = '1';
+
+            if (window.notifTimeout) clearTimeout(window.notifTimeout);
+            window.notifTimeout = setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => { notification.style.display = 'none'; }, 500);
+            }, 4500);
+        };
+
+        // Exception Listeners
+        window.onerror = (msg) => window.showSystemMessage(`Terminal Exception: ${msg}`, 'error');
+        window.addEventListener('unhandledrejection', (e) => window.showSystemMessage(`Async Portal Breach: ${e.reason}`, 'error'));
+    </script>
+
+    <script src="/user/playgames.js"></script>
+</body>
+</html>

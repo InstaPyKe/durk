@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Maintenance</title>
+    <style>
+        :root {
+            --primary-green: #00ea87;
+            --glass-bg: rgba(22, 27, 34, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(12px);
+            --text-light: #e6edf3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: var(--text-light);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .maintenance-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            padding: 50px 40px;
+            border-radius: 32px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-top: 4px solid var(--primary-green);
+            animation: cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 234, 135, 0.1);
+            border: 1px solid rgba(0, 234, 135, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: var(--primary-green);
+        }
+
+        h1 { font-size: 2rem; font-weight: 900; margin-bottom: 16px; letter-spacing: -0.5px; text-transform: uppercase; }
+        p { color: rgba(255, 255, 255, 0.6); line-height: 1.6; margin-bottom: 30px; font-size: 0.95rem; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 234, 135, 0.05);
+            border: 1px solid rgba(0, 234, 135, 0.1);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-green);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 234, 135, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 234, 135, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 234, 135, 0); }
+        }
+
+        #balloon-canvas { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <canvas id="balloon-canvas"></canvas>
+
+    <div class="maintenance-card">
+        <div class="icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </div>
+
+        <h1>SYSTEM DOWN</h1>
+        <p id="maintenanceMsg">
+            The platform is undergoing scheduled maintenance to improve network velocity. 
+            All agent terminals are temporarily suspended. We will be back online shortly.
+        </p>
+
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            Syncing Protocols
+        </div>
+    </div>
+
+    <script>
+        // High-Performance Aesthetic Background
+        const canvas = document.getElementById('balloon-canvas');
+        const ctx = canvas.getContext('2d');
+        let bubbles = [];
+        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        window.addEventListener('resize', resize);
+        resize();
+        class Bubble {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 20;
+                this.r = Math.random() * 3 + 1;
+                this.s = Math.random() * 0.8 + 0.3;
+            }
+            draw() {
+                this.y -= this.s;
+                if (this.y < -20) this.y = canvas.height + 20;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 234, 135, 0.1)'; ctx.fill();
+            }
+        }
+        for(let i=0; i<40; i++) bubbles.push(new Bubble());
+        function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); bubbles.forEach(b => b.draw()); requestAnimationFrame(animate); }
+        animate();
+    </script>
+</body>
+</html>

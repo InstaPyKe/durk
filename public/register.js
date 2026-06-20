@@ -58,18 +58,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Real-time Event Listener Triggers
     usernameInput.addEventListener('input', validateUsername);
-    emailInput.addEventListener('input', validateEmail);
-    passwordInput.addEventListener('input', () => { validatePassword(); validateConfirm(); });
-    confirmInput.addEventListener('input', validateConfirm);
+    usernameInput.addEventListener('change', validateUsername);
 
-    // Initialize and enforce the +2547 prefix for Kenyan nodes
+    emailInput.addEventListener('input', validateEmail);
+    emailInput.addEventListener('change', validateEmail);
+
+    passwordInput.addEventListener('input', () => { validatePassword(); validateConfirm(); });
+    passwordInput.addEventListener('change', () => { validatePassword(); validateConfirm(); });
+
+    confirmInput.addEventListener('input', validateConfirm);
+    confirmInput.addEventListener('change', validateConfirm);
+
     if (phoneInput) {
-        phoneInput.value = '+2547';
-        phoneInput.addEventListener('input', () => {
-            if (!phoneInput.value.startsWith('+2547')) phoneInput.value = '+2547';
-            validatePhone();
-        });
+        phoneInput.addEventListener('input', validatePhone);
+        phoneInput.addEventListener('change', validatePhone);
     }
+
+    // Trigger validation checks to accommodate browser autofill/restored values
+    setTimeout(() => {
+        if (usernameInput.value.trim()) validateUsername();
+        if (emailInput.value.trim()) validateEmail();
+        if (phoneInput && phoneInput.value.trim()) validatePhone();
+        if (passwordInput.value) validatePassword();
+        if (confirmInput.value) validateConfirm();
+    }, 500);
 
     // --- Real-time Username Evaluator Rules ---
      async function validateUsername() {

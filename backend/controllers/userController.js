@@ -48,6 +48,11 @@ exports.register = async (req, res) => {
         }
 
         // 2. Check existence
+        const existingUsername = await User.findByUsername(username);
+        if (existingUsername) {
+            return res.status(400).json({ message: 'Access Denied: Username handle already registered in terminal.' });
+        }
+
         const existingEmail = await User.findByEmail(email);
         if (existingEmail) {
             return res.status(400).json({ message: 'Access Denied: Email node already registered in terminal.' });

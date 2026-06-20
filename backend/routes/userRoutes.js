@@ -10,6 +10,7 @@ router.post('/register', userController.register);
 router.post('/login', userController.login);
 router.post('/admin-login', userController.adminLogin);
 router.get('/public/referrer/:id', userController.getReferrerName);
+router.get('/check-username/:username', userController.checkUsername);
 
 // Administrative Control Routes
 router.get('/admin/stats', authMiddleware, adminAuth, adminController.getDashboardStats); // This is the endpoint for the dashboard

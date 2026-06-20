@@ -7,9 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('password');
     const confirmInput = document.getElementById('confirmPassword');
     const submitBtn = document.getElementById('submitBtn');
-    const systemAlert = document.getElementById('systemAlert');
-    const alertTitle = document.getElementById('alertTitle');
-    const alertMessage = document.getElementById('alertMessage');
+
+    // Determine the API base URL for network synchronization
+    const API_BASE = window.location.origin.startsWith('file://') || window.location.origin.includes(':5500') 
+        ? 'http://localhost:3000' 
+        : '';
 
     // Capture referral code from URL if present (?ref=ID)
     const urlParams = new URLSearchParams(window.location.search);
@@ -21,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (referrerId) {
         const fetchReferrer = async () => {
             try {
-                const res = await fetch(`/api/users/public/referrer/${referrerId}`);
+                const res = await fetch(`${API_BASE}/api/users/public/referrer/${referrerId}`);
                 if (res.ok) {
                     const data = await res.json();
                     const notice = document.getElementById('referrerNotice');
@@ -81,8 +83,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        setInputState(usernameInput, feedback, 'Username handle accepted.', true);
-        validationStatus.username = true;
+        try {
+            const res = await fetch(`${API_BASE}/api/users/check-username/${encodeURIComponent(val)}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.available) {
+                    setInputState(usernameInput, feedback, 'Username handle is available.', true);
+                    validationStatus.username = true;
+                } else {
+                    setInputState(usernameInput, feedback, 'Access Denied: Username handle already registered.', false);
+                    validationStatus.username = false;
+                }
+            } else {
+                setInputState(usernameInput, feedback, 'Username handle accepted.', true);
+                validationStatus.username = true;
+            }
+        } catch (err) {
+            setInputState(usernameInput, feedback, 'Username handle accepted.', true);
+            validationStatus.username = true;
+        }
         evaluateFormCompleteness();
     }
 
@@ -212,25 +231,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Unified Glassy Notification Engine ---
     function showGlassNotification(message, type = 'success') {
-        if (!systemAlert || !alertTitle || !alertMessage) return;
+        const container = document.getElementById('glassNotifyContainer');
+        if (!container) return;
+
+        const node = document.createElement('div');
+        node.className = `glass-notification-node ${type}`;
         
+        const icons = {
+            success: 'bi-shield-check',
+            error: 'bi-exclamation-octagon',
+            info: 'bi-info-circle',
+            warning: 'bi-exclamation-triangle'
+        };
+
         const titles = {
-            success: 'System Success',
+            success: 'System Handshake',
             error: 'Access Denied',
             info: 'System Sync',
             warning: 'Security Alert'
         };
 
-        alertTitle.innerText = titles[type] || 'Notification';
-        alertMessage.innerText = message;
-        systemAlert.style.display = 'flex';
+        node.innerHTML = `
+            <div class="glass-notification-icon">
+                <i class="bi ${icons[type] || icons.info}"></i>
+            </div>
+            <div class="glass-notification-content">
+                <span class="label">${titles[type] || 'Notification'}</span>
+                <p class="message">${message}</p>
+            </div>
+        `;
 
-        // Auto-hide for non-error messages after 4 seconds
-        if (type !== 'error') {
-            setTimeout(() => {
-                systemAlert.style.display = 'none';
-            }, 4000);
-        }
+        container.appendChild(node);
+        setTimeout(() => {
+            node.style.opacity = '0';
+            node.style.transform = 'translateX(20px)';
+            setTimeout(() => node.remove(), 400);
+        }, 4000);
     }
 
     // --- Submission Guard / Enable Control Evaluation Rule ---
@@ -276,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 referrer_id: referrerId
             };
 
-            const response = await fetch('/api/users/register', {
+            const response = await fetch(`${API_BASE}/api/users/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(registrationData)

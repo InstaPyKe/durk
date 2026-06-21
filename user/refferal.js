@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '../public/login.html';
+        window.location.href = '../login.html';
         return;
     }
 
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 if (response.status === 401) {
                     localStorage.clear();
-                    window.location.href = '../public/login.html';
+                    window.location.href = '../login.html';
                 }
                 throw new Error('Failed to fetch referral statistics');
             }
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerGlassDecision('SECURITY LOGOUT', 'Terminate active session and purge authentication token?', () => {
             localStorage.clear();
             localStorage.setItem('waa_ads_logged_in', 'false');
-            window.location.href = '../public/index.html';
+            window.location.href = '../index.html';
         });
     });
 });

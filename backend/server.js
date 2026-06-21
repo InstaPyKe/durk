@@ -35,6 +35,8 @@ app.get('*', (req, res) => {
     // This catch-all should only apply if the path is NOT an API route AND NOT an admin route
     if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
         res.sendFile(path.join(__dirname, '../public/index.html'));
+    } else {
+        res.status(404).json({ error: 'Not Found' });
     }
 });
 

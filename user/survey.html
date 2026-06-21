@@ -22,11 +22,16 @@
         }
         .glass-input { background: rgba(13, 17, 23, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); color: #e6edf3; }
         .modal-overlay { background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(8px); transition: all 0.3s ease; }
-        /* Hamburger Icon Animation */
-        .hamburger-icon span { display: block; width: 20px; height: 2px; background: currentColor; border-radius: 2px; transition: all 0.3s ease; }
-        .hamburger-icon.hamburger-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-        .hamburger-icon.hamburger-active span:nth-child(2) { opacity: 0; }
-        .hamburger-icon.hamburger-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        /* Hamburger Menu Icons */
+        #sidebarToggle .bi-x-lg {
+            display: none !important;
+        }
+        #sidebarToggle.hamburger-active .bi-list {
+            display: none !important;
+        }
+        #sidebarToggle.hamburger-active .bi-x-lg {
+            display: block !important;
+        }
 
         @keyframes glassSlideIn {
             from { transform: translateX(100%) scale(0.9); opacity: 0; }
@@ -109,10 +114,9 @@
     <div class="flex-1 flex flex-col min-w-0">
         <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-4 lg:px-8 shrink-0 z-40">
             <div class="flex items-center gap-4">
-                <button id="sidebarToggle" class="lg:hidden p-2.5 text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/20 transition-all hamburger-icon">
-                    <span></span>
-                    <span></span> 
-                    <span></span> 
+                <button id="sidebarToggle" class="lg:hidden p-2.5 text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/20 transition-all flex items-center justify-center" aria-label="Toggle Navigation">
+                    <i class="bi bi-list text-xl"></i>
+                    <i class="bi bi-x-lg text-xl"></i>
                 </button>
                 <h1 class="text-sm font-bold text-emerald-500">Surveys</h1>
                 <div id="syncStatus" class="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/5 rounded-full transition-all duration-300">

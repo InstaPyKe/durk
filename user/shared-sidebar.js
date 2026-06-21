@@ -27,7 +27,7 @@ class AdminSidebar extends HTMLElement {
         this.querySelector('#sidebarLogoutBtn').addEventListener('click', () => {
             if(confirm('Terminate active session and logout of node?')) {
                 localStorage.clear();
-                window.location.href = '../public/login.html';
+                window.location.href = '../login.html';
             }
         });
     }

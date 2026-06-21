@@ -1,70 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | DurkWalmat Engine</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Login | DurkWalmart Engine</title>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
+        /* Modern Premium Style Design matching register.html */
+        :root {
+            --primary-green: #10b981;
+            --primary-blue: #3b82f6;
+            --danger-red: #ef4444;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(30, 41, 59, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(12px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
         body {
-            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-            font-family: 'Inter', system-ui, sans-serif;
-            color: #e6edf3;
+            background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.07), transparent 450px),
+                radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.07), transparent 450px),
+                #0b0f19;
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
         }
-        .glass-panel {
-            background: rgba(22, 27, 34, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+
+        /* Centered Login Card */
+        .auth-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        @keyframes glassSlideIn {
-            from { transform: translateX(100%) scale(0.9); opacity: 0; }
-            to { transform: translateX(0) scale(1); opacity: 1; }
+
+        .auth-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(16, 185, 129, 0.2);
         }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-header h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .auth-header h1 span {
+            color: var(--primary-green);
+        }
+
+        .auth-header p {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-light);
+            opacity: 0.9;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px 12px 42px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* Icon prefix styles */
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1rem;
+            pointer-events: none;
+            transition: color 0.25s ease;
+        }
+
+        .form-input:focus~.input-icon {
+            color: var(--primary-green);
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-green);
+            color: #0b0f19;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-submit:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Redirect Links */
+        .auth-footer-redirect {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .auth-footer-redirect a {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .auth-footer-redirect a:hover {
+            color: #34d399;
+            text-decoration: underline;
+        }
+
+        /* Glass notification stack (bottom-right toasts) */
         .glass-notification-node {
-            animation: glassSlideIn 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            pointer-events: auto;
+            min-width: 280px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            animation: slideIn 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .glass-notification-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .glass-notification-node.success .glass-notification-icon {
+            color: var(--primary-green);
             background: rgba(16, 185, 129, 0.1);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .glass-notification-node.error .glass-notification-icon {
+            color: var(--danger-red);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .glass-notification-node.info .glass-notification-icon {
+            color: var(--primary-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .glass-notification-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .glass-notification-content .label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .glass-notification-content .message {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Responsive settings */
+        @media (max-width: 560px) {
+            .auth-card {
+                padding: 30px 24px;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md glass-panel p-8 rounded-[2.5rem] shadow-2xl">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-black tracking-tighter text-white mb-2">
-                Durk<span class="text-emerald-500">walmart</span>
-            </h1>
-            <p class="text-gray-400 text-sm font-medium uppercase tracking-widest">User Authentication Protocol</p>
+
+<body>
+
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Durk<span>walmart</span></h1>
+            <p>User Authentication Protocol</p>
         </div>
 
-        <form id="loginForm" class="space-y-6">
-            <div>
-                <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">Identity Email</label>
-                <div class="relative">
-                    <i class="bi bi-person absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                    <input type="text" id="identifier" required placeholder="Enter credentials"
-                        class="w-full bg-black/20 border border-gray-800 rounded-2xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition outline-none text-sm">
+        <form id="loginForm">
+            <!-- Username/Email Field -->
+            <div class="form-group">
+                <label class="form-label" for="identifier">Identity Email</label>
+                <div class="input-wrapper">
+                    <input type="text" id="identifier" class="form-input" placeholder="Enter credentials" required
+                        autocomplete="username">
+                    <i class="bi bi-person input-icon"></i>
                 </div>
             </div>
 
-            <div>
-                <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">Security Password</label>
-                <div class="relative">
-                    <i class="bi bi-shield-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                    <input type="password" id="password" required placeholder="••••••••"
-                        class="w-full bg-black/20 border border-gray-800 rounded-2xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition outline-none text-sm">
+            <!-- Password Field -->
+            <div class="form-group">
+                <label class="form-label" for="password">Security Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required
+                        autocomplete="current-password">
+                    <i class="bi bi-shield-lock input-icon"></i>
                 </div>
             </div>
 
-            <button type="submit" id="loginBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-black font-black uppercase tracking-widest py-4 rounded-2xl transition-all shadow-xl shadow-emerald-900/20 active:scale-[0.98] text-xs">
-                Login
-            </button>
+            <!-- Login Action Trigger -->
+            <button type="submit" id="loginBtn" class="btn-submit">Login</button>
         </form>
 
-        <p class="mt-8 text-center text-xs text-gray-500">
-            New agent? <a href="/register.html" class="text-emerald-500 hover:underline font-bold">Register Identity</a>
-        </p>
+        <div class="auth-footer-redirect">
+            New agent? <a href="/register.html">Register Identity</a>
+        </div>
     </div>
 
     <!-- Glassy Notification UI Section -->
@@ -78,21 +334,21 @@
             if (!container) return;
 
             const node = document.createElement('div');
-            node.className = 'glass-notification-node flex items-center gap-4 p-5 rounded-2xl pointer-events-auto min-w-[280px] shadow-2xl';
-            
+            node.className = `glass-notification-node ${type}`;
+
             const icons = {
-                success: 'bi-shield-check text-emerald-400',
-                error: 'bi-exclamation-octagon text-rose-400',
-                info: 'bi-info-circle text-blue-400'
+                success: 'bi-shield-check',
+                error: 'bi-exclamation-octagon',
+                info: 'bi-info-circle'
             };
 
             node.innerHTML = `
-                <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                    <i class="bi ${icons[type] || icons.info} text-lg"></i>
+                <div class="glass-notification-icon">
+                    <i class="bi ${icons[type] || icons.info}"></i>
                 </div>
-                <div class="flex flex-col">
-                    <span class="text-[8px] font-black uppercase tracking-widest text-white/40 mb-1">System Handshake</span>
-                    <p class="text-[9px] italic text-emerald-100/90 leading-tight uppercase tracking-tighter">${message}</p>
+                <div class="glass-notification-content">
+                    <span class="label">System Handshake</span>
+                    <p class="message">${message}</p>
                 </div>
             `;
 
@@ -137,4 +393,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isPaused = false;
     let isTimerInitialized = false;
     let timerInterval = null;
+    let isTiktokVideoPlaying = false;
 
     // --- Unified Glassy Notification Engine ---
     function showGlassNotification(message, type = 'success') {
@@ -233,6 +234,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (elements.overlay) elements.overlay.classList.add('hidden');
         if (elements.countdownContainer) elements.countdownContainer.classList.remove('hidden');
         
+        isTiktokVideoPlaying = true;
+        updateTimerState();
+        if (!isTimerInitialized && currentTask) {
+            isTimerInitialized = true;
+            startSecurityTimer(currentTask.duration);
+        }
+        
+        if (elements.statusMsg) {
+            elements.statusMsg.innerText = "If the video doesn't play automatically, please tap the play icon inside the frame above!";
+        }
+        
         try {
             await fetch('/api/users/tasks/start', {
                 method: 'POST',
@@ -248,36 +260,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // 2.3 TikTok Playback State Listener (CORS-compliant handshake)
+    // 2.3 TikTok Playback State Listener (simplified to prevent CORS block from stopping timer)
     window.addEventListener('message', (event) => {
-        if (!event.origin.includes('tiktok.com')) return;
-        
-        try {
-            const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-            
-            // Detect various play/pause signals sent by TikTok embeds
-            const isPlaying = 
-                data.type === 'playing' || 
-                data.event === 'onPlayerPlay' ||
-                (data.type === 'onPlayerStateChange' && data.data?.play === true);
-                
-            const isStopped = 
-                data.type === 'paused' || 
-                data.event === 'onPlayerPause' ||
-                (data.type === 'onPlayerStateChange' && data.data?.play === false);
-
-            if (isPlaying) {
-                    handleAutoPause(false); // Resume timer logic
-                    if (!isTimerInitialized && currentTask) {
-                        isTimerInitialized = true;
-                        startSecurityTimer(currentTask.duration);
-                    }
-            } else if (isStopped) {
-                handleAutoPause(true, "Paused");
-            }
-        } catch (e) {
-            // Ignore non-JSON messages from other extensions
-        }
+        // Handled directly via user click triggers and tab presence verification
     });
 
     function formatTime(seconds) {
@@ -290,7 +275,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     function startSecurityTimer(duration) {
         secondsLeft = duration;
         if (elements.claimBtn) elements.claimBtn.disabled = true;
-        isPaused = false;
+        const isTabActive = !document.hidden && document.hasFocus();
+        isPaused = !(isTabActive && isTiktokVideoPlaying);
         
         if (timerInterval) clearInterval(timerInterval);
 
@@ -309,6 +295,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 elements.timerDisplay.innerText = "00:00";
                 elements.claimBtn.disabled = false;
                 elements.claimBtn.classList.add('bg-emerald-500', 'text-black');
+                
+                // Automate payout claim
+                elements.claimBtn.click();
             }
         }, 1000);
     }
@@ -369,9 +358,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    document.addEventListener('visibilitychange', () => handleAutoPause(document.hidden));
-    window.addEventListener('blur', () => handleAutoPause(true));
-    window.addEventListener('focus', () => handleAutoPause(false));
+    const updateTimerState = () => {
+        const isTabActive = !document.hidden && document.hasFocus();
+        if (isTabActive && isTiktokVideoPlaying) {
+            handleAutoPause(false);
+        } else {
+            handleAutoPause(true, "Paused");
+        }
+    };
+
+    document.addEventListener('visibilitychange', updateTimerState);
+    window.addEventListener('blur', updateTimerState);
+    window.addEventListener('focus', updateTimerState);
 
     // 6. Online Status Handler
     function updateOnlineStatus() {

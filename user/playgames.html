@@ -64,11 +64,16 @@
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
         .back-to-top-visible { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; }
         
-        /* Hamburger Menu Animation */
-        .hamburger-icon span { display: block; width: 20px; height: 2px; background: currentColor; border-radius: 2px; transition: all 0.3s ease; }
-        .hamburger-icon.hamburger-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-        .hamburger-icon.hamburger-active span:nth-child(2) { opacity: 0; }
-        .hamburger-icon.hamburger-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        /* Hamburger Menu Icons */
+        #sidebarToggle .bi-x-lg {
+            display: none !important;
+        }
+        #sidebarToggle.hamburger-active .bi-list {
+            display: none !important;
+        }
+        #sidebarToggle.hamburger-active .bi-x-lg {
+            display: block !important;
+        }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden">
@@ -136,8 +141,9 @@
         <!-- Header -->
         <header class="h-20 glass-panel border-b border-gray-800 flex items-center justify-between px-6 lg:px-12 shrink-0 z-40">
             <div class="flex items-center gap-4">
-                <button id="sidebarToggle" class="lg:hidden p-2.5 text-indigo-500 bg-indigo-500/10 border border-indigo-500/20 rounded-xl transition-all hamburger-icon">
-                    <span></span><span></span><span></span>
+                <button id="sidebarToggle" class="lg:hidden p-2.5 text-indigo-500 bg-indigo-500/10 border border-indigo-500/20 rounded-xl transition-all flex items-center justify-center" aria-label="Toggle Navigation">
+                    <i class="bi bi-list text-xl"></i>
+                    <i class="bi bi-x-lg text-xl"></i>
                 </button>
                 <h1 class="text-xs font-black uppercase tracking-[0.2em] text-indigo-500">Game <span class="text-white">zone</span></h1>
                 <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full">

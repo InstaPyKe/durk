@@ -333,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showGlassNotification(result.message || 'Registration successful. Redirecting...', "success");
                 submitBtn.innerText = 'Sync Complete';
                 localStorage.setItem('token', result.token);
+                localStorage.setItem('wa_ads_registered_email', result.user.email);
                 setTimeout(() => window.location.href = 'payment.html', 2000);
             } else {
                 showGlassNotification(result.message || 'Access Denied', "error");

@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Logout handler
     const logoutHandler = () => triggerGlassDecision('SECURITY LOGOUT', 'Terminate active session and purge authentication token?', () => {
         localStorage.clear();
-        window.location.href = '../public/index.html';
+        window.location.href = '../index.html';
     });
     document.getElementById('logoutBtn')?.addEventListener('click', logoutHandler);
     document.getElementById('sidebarLogoutBtn')?.addEventListener('click', logoutHandler);

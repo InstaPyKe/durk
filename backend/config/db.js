@@ -1,5 +1,10 @@
 const { Pool } = require('pg');
-require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+const dns = require('dns');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
+// 1. CRITICAL: Tell Node.js to resolve IPv6 addresses so it can find Railway Internal
+dns.setDefaultResultOrder('ipv6first'); 
 
 const pool = process.env.DATABASE_URL
     ? new Pool({
@@ -16,13 +21,13 @@ const pool = process.env.DATABASE_URL
         port: process.env.DB_PORT,
     });
 
-// Test connection
-pool.on('connect', () => {
-    console.log('[DATABASE] PostgreSQL link established. Master node connected.');
-});
-
-pool.on('error', (err) => {
-    console.error('[DATABASE] Critical Link Failure:', err);
+// 2. Add this log to see the exact connection status
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('❌ DB Connection Error:', err.message);
+  } else {
+    console.log('✅ DATABASE CONNECTED SUCCESSFULLY AT:', res.rows[0].now);
+  }
 });
 
 module.exports = pool;

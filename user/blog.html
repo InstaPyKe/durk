@@ -39,23 +39,15 @@
             visibility: visible !important;
             transform: translateY(0) !important;
         }
-        /* Hamburger Menu Animation */
-        .hamburger-icon span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: currentColor;
-            border-radius: 2px;
-            transition: all 0.3s ease;
+        /* Hamburger Menu Icons */
+        #sidebarToggle .bi-x-lg {
+            display: none !important;
         }
-        .hamburger-icon.hamburger-active span:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
+        #sidebarToggle.hamburger-active .bi-list {
+            display: none !important;
         }
-        .hamburger-icon.hamburger-active span:nth-child(2) {
-            opacity: 0;
-        }
-        .hamburger-icon.hamburger-active span:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
+        #sidebarToggle.hamburger-active .bi-x-lg {
+            display: block !important;
         }
         @keyframes statusBlink {
             0%, 100% { opacity: 1; }
@@ -89,7 +81,7 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 glass-panel sidebar-transition -translate-x-full lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-800">
         <div class="flex flex-col h-full">
             <div class="p-6 flex items-center justify-between">
-                <a href="../public/index.html" class="text-2xl font-black tracking-tighter text-white">
+                <a href="../index.html" class="text-2xl font-black tracking-tighter text-white">
                     durk<span class="text-emerald-500">walmart</span>
                 </a>
                 <button id="sidebarClose" class="lg:hidden p-2 text-gray-400 hover:text-white transition">
@@ -150,10 +142,9 @@
 
         <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-4 lg:px-8 shrink-0 z-40">
             <div class="flex items-center gap-4">
-                <button id="sidebarToggle" class="lg:hidden p-2.5 text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/20 transition-all hamburger-icon">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <button id="sidebarToggle" class="lg:hidden p-2.5 text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/20 transition-all flex items-center justify-center" aria-label="Toggle Navigation">
+                    <i class="bi bi-list text-xl"></i>
+                    <i class="bi bi-x-lg text-xl"></i>
                 </button>
                 <h1 class="text-xs font-bold text-emerald-500">Content publication engine</h1>
                 <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full transition-all duration-300">

@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         triggerGlassDecision('SECURITY LOGOUT', 'Terminate active session and purge authentication token?', () => {
             localStorage.clear();
             localStorage.setItem('waa_ads_logged_in', 'false');
-            window.location.href = '../public/index.html';
+            window.location.href = '../index.html';
         });
     }
     document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             triggerGlassDecision('SECURITY LOGOUT', 'Terminate active session and purge authentication token?', () => {
                 localStorage.clear();
                 localStorage.setItem('waa_ads_logged_in', 'false');
-                window.location.href = '../public/index.html';
+                window.location.href = '../index.html';
             });
         }
     }

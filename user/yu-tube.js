@@ -273,17 +273,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (elements.startBtn) elements.startBtn.disabled = false;
                 },
                 'onStateChange': (event) => {
-                    // YT.PlayerState.PLAYING = 1
-                    if (event.data === 1) {
-                        handleAutoPause(false);
-                        if (!isTimerInitialized) {
-                            isTimerInitialized = true;
-                            startSecurityTimer(currentTask.duration);
-                        }
-                    } else if (event.data === 3) { // YT.PlayerState.BUFFERING
-                        handleAutoPause(true, "Buffering... paused");
-                    } else {
-                        handleAutoPause(true);
+                    updateTimerState();
+                    if (event.data === 1 && !isTimerInitialized) {
+                        isTimerInitialized = true;
+                        startSecurityTimer(currentTask.duration);
                     }
                 }
             }
@@ -318,7 +311,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     function startSecurityTimer(duration) {
         secondsLeft = duration;
         if (elements.claimBtn) elements.claimBtn.disabled = true;
-        isPaused = false;
+        
+        const isTabActive = !document.hidden && document.hasFocus();
+        const playing = player && typeof player.getPlayerState === 'function' && player.getPlayerState() === 1;
+        isPaused = !(isTabActive && playing);
         
         if (timerInterval) clearInterval(timerInterval);
 
@@ -424,9 +420,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    document.addEventListener('visibilitychange', () => handleAutoPause(document.hidden));
-    window.addEventListener('blur', () => handleAutoPause(true));
-    window.addEventListener('focus', () => handleAutoPause(false));
+    const updateTimerState = () => {
+        const isTabActive = !document.hidden && document.hasFocus();
+        const playing = player && typeof player.getPlayerState === 'function' && player.getPlayerState() === 1;
+
+        if (isTabActive && playing) {
+            handleAutoPause(false);
+        } else {
+            let msg = "Paused";
+            if (player && typeof player.getPlayerState === 'function' && player.getPlayerState() === 3) {
+                msg = "Buffering... paused";
+            }
+            handleAutoPause(true, msg);
+        }
+    };
+
+    document.addEventListener('visibilitychange', updateTimerState);
+    window.addEventListener('blur', updateTimerState);
+    window.addEventListener('focus', updateTimerState);
 
     // 6. Online Status Handler
     function updateOnlineStatus() {
@@ -452,7 +463,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
         triggerGlassDecision('Log out', 'Are you sure you want to log out of your session?', () => {
             localStorage.clear();
-            window.location.href = '../public/index.html';
+            window.location.href = '../index.html';
         });
     });
 

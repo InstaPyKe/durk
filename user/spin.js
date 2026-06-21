@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     if (!token && !localStorage.getItem('wa_ads_registered_user')) {
-        window.location.href = '../public/login.html';
+        window.location.href = '../login.html';
         return;
     }
 
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutHandler = () => triggerGlassDecision('SECURITY LOGOUT', 'Terminate active session and purge authentication token?', () => {
         localStorage.clear();
         localStorage.setItem('waa_ads_logged_in', 'false');
-        window.location.href = '../public/index.html';
+        window.location.href = '../index.html';
     });
     document.getElementById('logoutBtn')?.addEventListener('click', logoutHandler);
     document.getElementById('sidebarLogoutBtn')?.addEventListener('click', logoutHandler);

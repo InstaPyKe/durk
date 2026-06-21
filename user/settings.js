@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
         if (confirm('Terminate active session?')) {
             localStorage.clear();
-            window.location.href = '../public/index.html';
+            window.location.href = '../index.html';
         }
     });
 

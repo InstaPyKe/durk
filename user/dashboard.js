@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (err) {
             console.error('Dashboard synchronization error:', err);
-            triggerGlassDecision('Notice', 'Connection error. Please log in again to continue.', () => { window.location.href = '../public/login.html'; });
+            triggerGlassDecision('Notice', 'Connection error. Please log in again to continue.', () => { window.location.href = '../login.html'; });
         } finally {
             if (loadingSpinner) loadingSpinner.style.display = 'none';
         }
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if(confirm('Are you sure you want to log out?')) {
             localStorage.clear();
             localStorage.setItem('waa_ads_logged_in', 'false');
-            window.location.href = '../public/index.html';
+            window.location.href = '../index.html';
         }
     });
 

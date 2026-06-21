@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         triggerGlassDecision('Log out', 'Are you sure you want to log out of your session?', () => {
             localStorage.clear();
             localStorage.setItem('waa_ads_logged_in', 'false');
-            window.location.href = '../public/index.html';
+            window.location.href = '../index.html';
         });
     });
 

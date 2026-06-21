@@ -1,0 +1,13 @@
+# nixpacks.toml
+# Tells Railway's builder to configure Node.js and run the server from the backend subdirectory
+
+providers = ["node"]
+
+[phases.setup]
+nixPkgs = ["...", "nodejs"]
+
+[phases.install]
+cmds = ["cd backend && npm install"]
+
+[start]
+cmd = "node backend/server.js"

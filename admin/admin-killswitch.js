@@ -32,28 +32,46 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     btn.onclick = async () => {
         const action = isKillSwitchActive ? 'RE-ENABLE' : 'TERMINATE';
-        if (!confirm(`⚠️ CRITICAL PROTOCOL: Are you sure you want to ${action} all user nodes?`)) return;
+        
+        const executeToggle = async () => {
+            btn.disabled = true;
+            btn.innerText = "EXECUTING...";
 
-        btn.disabled = true;
-        btn.innerText = "EXECUTING...";
+            try {
+                const res = await fetch('/api/users/admin/kill-switch', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ active: !isKillSwitchActive })
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    isKillSwitchActive = !isKillSwitchActive;
+                    document.getElementById('lastChange').innerText = new Date().toLocaleTimeString();
+                    updateUI();
+                    alert(data.message);
+                } else {
+                    const data = await res.json();
+                    alert(data.message || "Failed to execute protocol.");
+                }
+            } catch (err) { alert("Command transmission failed."); }
+            btn.disabled = false;
+        };
 
-        try {
-            const res = await fetch('/api/users/admin/kill-switch', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ active: !isKillSwitchActive })
-            });
-            
-            if (res.ok) {
-                isKillSwitchActive = !isKillSwitchActive;
-                document.getElementById('lastChange').innerText = new Date().toLocaleTimeString();
-                updateUI();
-            }
-        } catch (err) { alert("Command transmission failed."); }
-        btn.disabled = false;
+        if (window.triggerGlassDecision) {
+            window.triggerGlassDecision(
+                isKillSwitchActive ? 'RE-ENGAGE SYSTEM' : 'SYSTEM KILL SWITCH',
+                isKillSwitchActive 
+                    ? `⚠️ RESTORATION PROTOCOL: Re-enable the platform for all visitors and user nodes?`
+                    : `🚨 TERMINATION PROTOCOL: Shut down all public access and user account dashboard cycles immediately?`,
+                executeToggle
+            );
+        } else if (confirm(`⚠️ CRITICAL PROTOCOL: Are you sure you want to ${action} all user nodes?`)) {
+            executeToggle();
+        }
     };
 
     fetchStatus();

@@ -11,6 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// System Killswitch / Maintenance Enforcement Middleware
+const maintenanceMiddleware = require('./middleware/maintenanceMiddleware');
+app.use(maintenanceMiddleware);
+
+
 // Correct order: Serve specific static directories first
 // Admin static files should be served before public static files
 app.use('/admin', express.static(path.join(__dirname, '../admin')));

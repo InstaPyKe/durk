@@ -41,26 +41,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     window.processPayout = async (payoutId, status) => {
-        if (!confirm(`Are you sure you want to ${status.toLowerCase()} payout ID ${payoutId}?`)) return;
-        try {
-            const response = await fetch(`/api/users/admin/payouts/${payoutId}`, {
-                method: 'PATCH',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ status })
-            });
-            const data = await response.json();
-            if (response.ok) {
-                alert(data.message);
-                fetchPendingPayouts(); // Refresh the list
-            } else {
-                alert(data.message || 'Failed to process payout.');
+        const executePayout = async () => {
+            try {
+                const response = await fetch(`/api/users/admin/payouts/${payoutId}`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert(data.message);
+                    fetchPendingPayouts(); // Refresh the list
+                } else {
+                    alert(data.message || 'Failed to process payout.');
+                }
+            } catch (err) {
+                console.error('Error processing payout:', err);
+                alert('Network error or server unreachable.');
             }
-        } catch (err) {
-            console.error('Error processing payout:', err);
-            alert('Network error or server unreachable.');
+        };
+
+        if (window.triggerGlassDecision) {
+            window.triggerGlassDecision(
+                status === 'Completed' ? 'APPROVE PAYOUT' : 'REJECT PAYOUT',
+                `⚠️ PAYOUT AUDIT: Mark payout transaction #${payoutId} as ${status.toLowerCase()}?`,
+                executePayout
+            );
+        } else if (confirm(`Are you sure you want to ${status.toLowerCase()} payout ID ${payoutId}?`)) {
+            executePayout();
         }
     };
 

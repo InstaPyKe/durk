@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,8 +13,43 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
+        @media (max-width: 320px) {
+            body {
+                padding: 0.5rem !important;
+            }
+
+            .glass-panel {
+                padding: 1rem !important;
+                border-radius: 1rem !important;
+            }
+
+            h1 {
+                font-size: 1.5rem !important;
+            }
+
+            input {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+                padding-left: 2.25rem !important;
+                font-size: 11px !important;
+            }
+
+            label {
+                font-size: 9px !important;
+            }
+
+            .pl-12 {
+                padding-left: 2.25rem !important;
+            }
+
+            .bi {
+                left: 0.75rem !important;
+            }
+        }
     </style>
 </head>
+
 <body class="bg-gray-950 text-gray-100 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md glass-panel p-8 rounded-2xl shadow-2xl">
         <div class="text-center mb-8">
@@ -42,12 +78,13 @@
                 </div>
             </div>
 
-            <button type="submit" id="loginBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98]">
+            <button type="submit" id="loginBtn"
+                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98]">
                 Establish Connection
             </button>
         </form>
 
-        <div id="statusMessage" class="mt-6 text-center text-sm hidden"></div>
+        <div id="statusMessage" class="mt-6 transition-all duration-300 transform scale-95 opacity-0 hidden"></div>
     </div>
 
     <script>
@@ -55,16 +92,43 @@
         const loginBtn = document.getElementById('loginBtn');
         const statusMsg = document.getElementById('statusMessage');
 
+        function updateStatus(message, type) {
+            statusMsg.classList.remove('hidden');
+
+            // Apply transitions on next frame
+            requestAnimationFrame(() => {
+                statusMsg.classList.remove('scale-95', 'opacity-0');
+                statusMsg.classList.add('scale-100', 'opacity-100');
+            });
+
+            const configs = {
+                info: {
+                    bg: 'bg-blue-500/10 border-blue-500/20 text-blue-400 shadow-[0_4px_20px_rgba(59,130,246,0.15)]',
+                    icon: '<i class="bi bi-arrow-repeat animate-spin text-sm mr-2.5"></i>'
+                },
+                success: {
+                    bg: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 shadow-[0_4px_20px_rgba(16,185,129,0.15)]',
+                    icon: '<i class="bi bi-shield-check text-sm mr-2.5"></i>'
+                },
+                error: {
+                    bg: 'bg-rose-500/10 border-rose-500/20 text-rose-400 shadow-[0_4px_20px_rgba(244,63,94,0.15)]',
+                    icon: '<i class="bi bi-exclamation-octagon text-sm mr-2.5"></i>'
+                }
+            };
+
+            const config = configs[type] || configs.info;
+            statusMsg.className = `mt-6 p-4 rounded-xl border text-xs font-bold uppercase tracking-wider flex items-center justify-center transition-all duration-300 transform ${config.bg}`;
+            statusMsg.innerHTML = `${config.icon} <span>${message}</span>`;
+        }
+
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('accessKey').value.trim();
 
-            // Reset UI state
-            statusMsg.className = "mt-6 text-center text-sm text-emerald-400 font-medium";
-            statusMsg.innerText = "Authenticating with central node...";
-            statusMsg.classList.remove('hidden');
+            // Set state to authenticating
+            updateStatus("Establishing connection with central node...", "info");
             loginBtn.disabled = true;
             loginBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
@@ -72,16 +136,16 @@
                 const response = await fetch('/api/users/admin-login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        username: email, // Sending email as username to match backend findByUsername logic
-                        password: password 
+                    body: JSON.stringify({
+                        username: email,
+                        password: password
                     })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    statusMsg.innerText = "Access Granted. Initializing portal...";
+                    updateStatus("Access granted. Initializing session...", "success");
                     localStorage.setItem('token', data.token);
                     setTimeout(() => {
                         window.location.href = '/admin/admin-dashboard.html';
@@ -90,12 +154,12 @@
                     throw new Error(data.message || "Authentication Handshake Failed");
                 }
             } catch (error) {
-                statusMsg.className = "mt-6 text-center text-sm text-rose-400 font-medium";
-                statusMsg.innerText = error.message;
+                updateStatus(error.message, "error");
                 loginBtn.disabled = false;
                 loginBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
         });
     </script>
 </body>
+
 </html>

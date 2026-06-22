@@ -1,0 +1,9 @@
+{
+  "name": "durk",
+  "version": "1.0.0",
+  "description": "Durk platform",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

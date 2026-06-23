@@ -6,12 +6,12 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 // 1. CRITICAL: Tell Node.js to resolve IPv6 addresses so it can find Railway Internal
 dns.setDefaultResultOrder('ipv6first'); 
 
+const isProduction = process.env.NODE_ENV === 'production' || process.env.DATABASE_URL?.includes('render.com') || process.env.DATABASE_URL?.includes('railway');
+
 const pool = process.env.DATABASE_URL
     ? new Pool({
         connectionString: process.env.DATABASE_URL,
-        ssl: {
-            rejectUnauthorized: false
-        }
+        ssl: isProduction ? { rejectUnauthorized: false } : false
       })
     : new Pool({
         user: process.env.DB_USER,
